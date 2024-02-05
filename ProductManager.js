@@ -37,9 +37,9 @@ class ProductManager {
     }
   };
 
-  readProducts = () => {
+  readProducts = async () => {
     if (fs.existsSync(this.path)) {
-      const data = fs.readFileSync(this.path, "utf-8");
+      const data = await fs.promises.readFile(this.path, "utf-8");
       const products = JSON.parse(data);
       return products;
     } else {
@@ -77,8 +77,8 @@ class ProductManager {
     }
   };
 
-  getProductById = (id) => {
-      const products = this.readProducts();
+  getProductById = async (id) => {
+      const products = await this.readProducts();
       const foundProduct = products.find(
         (product) => product.id === Number(id)
       );

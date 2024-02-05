@@ -8,7 +8,7 @@ app.set("PORT", 8080);
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-app.get("/products", (req, res) => {
+app.get("/products", async (req, res) => {
   try {
     const { limit } = req.query;
 
@@ -17,7 +17,7 @@ app.get("/products", (req, res) => {
     }
 
     const productManager = new ProductManager();
-    const products = productManager.readProducts();
+    const products = await productManager.readProducts();
 
     if (!limit) {
       return res.status(200).json({ products });
@@ -30,7 +30,7 @@ app.get("/products", (req, res) => {
   }
 });
 
-app.get("/products/:pid", (req, res) => {
+app.get("/products/:pid", async (req, res) => {
   try {
     const {pid} = req.params
 
@@ -39,7 +39,7 @@ app.get("/products/:pid", (req, res) => {
     }
 
     const productManager = new ProductManager()
-    const foundProduct = productManager.getProductById(pid)
+    const foundProduct = await productManager.getProductById(pid)
 
     if(!foundProduct){
         return res.status(404).json({message: "Product not found"})
