@@ -1,0 +1,92 @@
+[
+  {
+    "title": "ASUS ROG STRIX B760-F GAMING WIFI",
+    "description": "Leap into the future with the ROG Strix B760-F, a fantastic upgrade into 13th Gen with its dominant power solution and best-in-class DDR5 speeds. Its next-gen PCIe 5.0 slot gives overwhelming graphics card throughput for maximum FPS, and you can minimize lag via hyperfast WiFi 6E or 2.5G LAN. All these perks come alongside distinctive rainbow stripes and retro accents so you can show off your gamer pride.",
+    "price": 200,
+    "thumbnail": "Sin imagen",
+    "code": "abc123456",
+    "stock": 25,
+    "id": 0
+  },
+  {
+    "title": "ASUS ROG Pugio II Gaming Mouse",
+    "description": "ROG Pugio II ambidextrous lightweight wireless gaming mouse with 16,000 dpi optical sensor, 7 programmable buttons, on-the-fly DPI-adjust button and Aura Sync RGB lighting.",
+    "price": 400,
+    "thumbnail": "Sin imagen",
+    "code": "abc123",
+    "stock": 10,
+    "id": 1
+  },
+  {
+    "title": "Gigabyte GeForce RTX 3070 GAMING OC (rev 1.0)",
+    "description": "The Gigabyte GeForce RTX 3070 GAMING OC (rev 1.0) Graphics Card brings the power of real-time ray tracing and AI to your PC games. The GPU features 8GB of GDDR6 VRAM and a 256-bit memory interface, offering improved performance and power efficiency over the previous Turing-based generation. For cooling, Gigabyte implemented the WINDFORCE 3X cooling system. The cooling system uses three 80mm fans.",
+    "price": 300,
+    "thumbnail": "Sin imagen",
+    "code": "abc000",
+    "stock": 8,
+    "id": 2
+  },
+  {
+    "title": "ASUS ROG Strix Scope II RX Gaming Keyboard",
+    "description": "ROG Strix Scope II RX gaming keyboard with pre-lubed ROG RX optical switches, IP57 waterproof protection, sound-dampening foam, PBT doubleshot keycaps or UV-coated ABS keycaps, streaming hotkeys, multi-function controls, three tilt angles, and wrist rest.",
+    "price": 150,
+    "thumbnail": "Sin imagen",
+    "code": "abc888",
+    "stock": 3,
+    "id": 3
+  },
+  {
+    "title": "AMD Ryzen 5 3600 6-core, 12-Thread Unlocked Desktop Processor with Wraith Spire Cooler",
+    "description": "When you have the “Zen 3” processor architecture for gamers and content creators, the possibilities are endless. Whether you are playing the latest games, designing the next skyscraper, or crunching data, you need a powerful processor that can handle it all—and more. Hands down, the AMD Ryzen™ 5000 Series desktop processors set the bar for gamers and artists alike.",
+    "price": 100,
+    "thumbnail": "Sin imagen",
+    "code": "code456",
+    "stock": 10,
+    "id": 4
+  },
+  {
+    "title": "ASUS ROG Chakram X Gaming Mouse",
+    "description": "ROG Chakram X wireless RGB gaming mouse with next-gen 36,000 dpi ROG AimPoint optical sensor, 8000 Hz polling rate, low-latency tri-mode connectivity (RF 2.4 GHz / Bluetooth / wired), 11 programmable buttons, an analog joystick and hot-swappable micro switch sockets (mechanical / optical).",
+    "price": 140,
+    "thumbnail": "Sin imagen",
+    "code": "code0000",
+    "stock": 50,
+    "id": 5
+  },
+  {
+    "title": "MSI GeForce RTX 3090 VENTUS 3X 24G OC",
+    "description": "The GeForce RTX™ 3090 is a big ferocious GPU (BFGPU) with TITAN class performance. It's powered by Ampere—NVIDIA's 2nd gen RTX architecture—doubling down on ray tracing and AI performance with enhanced RT Cores, Tensor Cores, and new streaming multiprocessors. Plus, it features a staggering 24 GB of G6X memory, all to deliver the ultimate gaming experience.",
+    "price": 880,
+    "thumbnail": "Sin imagen",
+    "code": "123456789",
+    "stock": 5,
+    "id": 6
+  },
+  {
+    "title": "ASUS ROG Strix Z790-E Gaming WiFi II",
+    "description": "Style and substance come together like never before in the feature-packed ROG Strix Z790-E II. From its vibrant multi-layered I/O shroud to its stacks of VRM cooling, it is a conversation piece that also delivers enhanced DDR5 performance, ample PCIe 5.0 slots and the DIY-friendly Q-Design feature set that makes building and upgrading a breeze.",
+    "price": 500,
+    "thumbnail": "Sin imagen",
+    "code": "code8888",
+    "stock": 15,
+    "id": 7
+  },
+  {
+    "title": "Gigabyte B650M GAMING X AX",
+    "description": "AMD Socket AM5：Supports AMD Ryzen™ 7000 Series Processors. Unparalleled Performance：Direct 6+2+1 Phases Digital VRM Solution. Dual Channel DDR5：4*SMD DIMMs with AMD EXPO™ & Intel® XMP Memory Module Support. SuperSpeed Storage：2*PCIe 4.0 x4 M.2 Connectors. Advanced Thermal Design & M.2 Thermal Guard：To Ensure VRM Power Stability & 25110 M.2 SSD Performance.",
+    "price": 230,
+    "thumbnail": "Sin imagen",
+    "code": "acode777",
+    "stock": 10,
+    "id": 8
+  },
+  {
+    "title": "ASUS VZ279HEG1R Gaming Monitor – 27 inch Full HD (1920 x 1080), IPS, 75Hz, 1ms MPRT",
+    "description": "27-inch Full HD (1920 x 1080) IPS gaming monitor with 75Hz refresh rate designed for gamers and immersive gameplay.ASUS Extreme Low Motion Blur (ELMB ™) technology enables a 1ms response time (MPRT) together with Adaptive-sync, eliminating ghosting and tearing for sharp gaming visuals with high frame rates.",
+    "price": 130,
+    "thumbnail": "Sin imagen",
+    "code": "zxc789",
+    "stock": 12,
+    "id": 9
+  }
+]
