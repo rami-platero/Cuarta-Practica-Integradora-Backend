@@ -1,56 +1,20 @@
 import express from "express";
 import morgan from "morgan";
-import ProductManager from "../ProductManager.js";
+import productsRoute from "./routes/products.route.js";
+import cartsRoute from './routes/carts.route.js'
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
 
 app.set("PORT", 8080);
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
+app.use(express.json())
 
-app.get("/products", async (req, res) => {
-  try {
-    const { limit } = req.query;
+app.use("/api/products", productsRoute)
+app.use("/api/carts", cartsRoute)
 
-    if (limit && (isNaN(limit) || (Number(limit) < 0))) {
-      return res.status(400).json({ message: "Invalid limit query." });
-    }
-
-    const productManager = new ProductManager();
-    const products = await productManager.readProducts();
-
-    if (!limit) {
-      return res.status(200).json({ products });
-    }
-
-    const limitedProducts = products.slice(0, Number(limit));
-    return res.status(200).json({ products: limitedProducts });
-  } catch (error) {
-    return res.status(500).json({ message: "Internal server error.", error });
-  }
-});
-
-app.get("/products/:pid", async (req, res) => {
-  try {
-    const {pid} = req.params
-
-    if(!pid || isNaN(pid)){
-        return res.status(400).json({message: "Invalid or missing ID."})
-    }
-
-    const productManager = new ProductManager()
-    const foundProduct = await productManager.getProductById(pid)
-
-    if(!foundProduct){
-        return res.status(404).json({message: "Product not found"})
-    }
-
-    return res.status(200).json({product: foundProduct})
-
-  } catch (error) {
-    return res.status(500).json({ message: "Internal server error.", error });
-  }
-});
+app.use(errorHandler)
 
 app.listen(app.get("PORT"), () =>
   console.log("Server running on port", app.get("PORT"))
