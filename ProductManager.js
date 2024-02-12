@@ -6,7 +6,7 @@ class ProductManager {
   id;
 
   constructor() {
-    this.path = config.cartsPath;
+    this.path = config.productsPath;
     this.updateId();
   }
 
