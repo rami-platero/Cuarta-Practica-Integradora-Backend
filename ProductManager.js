@@ -1,11 +1,12 @@
 import fs from "fs";
 import { AppError } from "./src/helpers/AppError.js";
+import { config } from "./src/config.js";
 
 class ProductManager {
   id;
 
   constructor() {
-    this.path = "./products.json";
+    this.path = config.cartsPath;
     this.updateId();
   }
 

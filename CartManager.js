@@ -1,10 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
 import { AppError } from "./src/helpers/AppError.js";
 import fs from 'fs'
+import { config } from "./src/config.js";
 
 class CartManager {
   constructor() {
-    this.path = "./carts.json";
+    this.path = config.productsPath;
   }
 
   readCart = async () => {
