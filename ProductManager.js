@@ -62,7 +62,7 @@ class ProductManager {
         continue;
       }
       if (!Object.keys(allowedFields).includes(key)) {
-        throw new AppError(400, { message: "You entered an invalid field." });
+        throw new AppError(400, { message: `${key} is not a valid field.` });
       }
 
       if (typeof product[key] !== allowedFields[key].type) {
