@@ -1,4 +1,5 @@
-import fs from 'fs'
+import fs from "fs";
+import { AppError } from "./src/helpers/AppError.js";
 
 class ProductManager {
   id;
@@ -8,8 +9,8 @@ class ProductManager {
     this.updateId();
   }
 
-  updateId = () => {
-    const products = this.readProducts();
+  updateId = async () => {
+    const products = await this.readProducts();
     if (!products.length) {
       this.id = 0;
     } else {
@@ -19,22 +20,82 @@ class ProductManager {
   };
 
   validateAddProduct = (product) => {
-    const { title, description, price, thumbnail, code, stock } = product;
+    const { thumbnails } = product;
 
-    if (!title || !description || !price || !thumbnail || !code || !stock) {
-      throw Error("Error: Some fields are empty.");
+    const allowedFields = {
+      title: {
+        type: "string",
+        required: true,
+      },
+      description: {
+        type: "string",
+        required: true,
+      },
+      code: {
+        type: "string",
+        required: true,
+      },
+      stock: {
+        type: "number",
+        required: true,
+      },
+      price: {
+        type: "number",
+        required: true,
+      },
+      category: {
+        type: "string",
+        required: true,
+      },
+      status: {
+        type: "boolean",
+        required: false,
+        default: true,
+      },
+    };
+
+    const keys = Object.keys(product);
+
+    for (const key of keys) {
+      if (key === "thumbnails") {
+        continue;
+      }
+      if (!Object.keys(allowedFields).includes(key)) {
+        throw new AppError(400, { message: "You entered an invalid field." });
+      }
+
+      if (typeof product[key] !== allowedFields[key].type) {
+        throw new AppError(400, {
+          message: `${key} must be a ${allowedFields[key].type}`,
+        });
+      }
     }
 
-    if (
-      typeof title !== "string" ||
-      typeof description !== "string" ||
-      typeof thumbnail !== "string" ||
-      typeof code !== "string" ||
-      typeof price !== "number" ||
-      typeof stock !== "number"
-    ) {
-      throw Error("Error: Some fields have an invalid type.");
+    const allowedKeys = Object.keys(allowedFields);
+
+    for (const key of allowedKeys) {
+      if (!keys.includes(key) && allowedFields[key].required) {
+        throw new AppError(400, { message: "Some fields are empty." });
+      } else if (!keys.includes(key) && !allowedFields[key].required) {
+        product[key] = allowedFields[key].default;
+      }
     }
+
+    if (thumbnails) {
+      if (!Array.isArray(thumbnails)) {
+        throw new AppError(400, {
+          message: "Invalid type for the 'thumbnails' field.",
+        });
+      }
+
+      if (!thumbnails.every((item) => typeof item === "string")) {
+        throw new AppError(400, {
+          message: "Invalid type for the 'thumbnails' field.",
+        });
+      }
+    }
+
+    return product;
   };
 
   readProducts = async () => {
@@ -52,42 +113,30 @@ class ProductManager {
     console.log(products);
   };
 
-  addProduct = (product) => {
-    try {
-      this.validateAddProduct(product);
+  addProduct = async (body) => {
+    const product = this.validateAddProduct(body);
 
-      const products = this.readProducts();
-
-      const foundProduct = products.find((p) => p.code === product.code);
-
-      if (foundProduct) {
-        throw Error(
-          "Error: Code provided is already in use."
-        );
-      }
-
-      products.push({ ...product, id: this.id++ });
-
-      const json = JSON.stringify(products, null, 2);
-      fs.writeFileSync(this.path, json);
-    } catch (error) {
-      if ("message" in error) {
-        console.error(error.message);
-      }
+    const products = await this.readProducts();
+    const foundProduct = products.find((p) => p.code === product.code);
+    if (foundProduct) {
+      throw new AppError(409, { message: "Code provided is already in use." });
     }
+
+    products.push({ ...product, id: this.id++ });
+
+    const json = JSON.stringify(products, null, 2);
+    await fs.promises.writeFile(this.path, json);
   };
 
   getProductById = async (id) => {
-      const products = await this.readProducts();
-      const foundProduct = products.find(
-        (product) => product.id === Number(id)
-      );
-      return foundProduct
+    const products = await this.readProducts();
+    const foundProduct = products.find((product) => product.id === Number(id));
+    return foundProduct;
   };
 
   validateUpdateProduct = (id, upFields) => {
     if (isNaN(id)) {
-      throw Error("Invalid or missing product ID");
+      throw new AppError(400, { message: "Invalid or missing product ID" });
     }
 
     const allowedFields = {
@@ -102,84 +151,79 @@ class ProductManager {
     const keys = Object.keys(upFields);
 
     if (!keys.length) {
-      throw Error(
-        "You must provide at least one field to update the product."
-      );
+      throw new AppError(400, {
+        message: "You must provide at least one field to update the product.",
+      });
     }
 
     for (const key of keys) {
       if (!Object.keys(allowedFields).includes(key)) {
-        throw Error("You entered an invalid field.");
+        throw new AppError(400, { message: "You entered an invalid field." });
       }
 
       if (typeof upFields[key] !== allowedFields[key]) {
-        throw Error(`${key} must be a ${allowedFields[key]}`);
+        throw new AppError(400, {
+          message: `${key} must be a ${allowedFields[key]}`,
+        });
       }
     }
   };
 
-  updateProduct = (id, fields) => {
-    try {
-      this.validateUpdateProduct(id, fields);
+  updateProduct = async (id, fields) => {
+    this.validateUpdateProduct(id, fields);
 
-      const products = this.readProducts();
-      const foundProduct = products.find((p) => p.id === id);
-      if (!foundProduct) {
-        throw Error("No product found with the specified ID.");
-      }
-      if (Object.keys(fields).includes("code")) {
-        const productWithSameCode = products.find(
-          (p) => p.code === fields["code"]
-        );
-        if (productWithSameCode && productWithSameCode.id !== id) {
-          throw Error(
-            "You can't update the code field because you are entering a code that is already in use."
-          );
-        }
-      }
-
-      const updatedProducts = products.map((p) => {
-        if (p.id === foundProduct.id) {
-          return { ...p, ...fields };
-        } else {
-          return p;
-        }
+    const products = await this.readProducts();
+    console.log(products);
+    const foundProduct = products.find((p) => p.id === Number(id));
+    if (!foundProduct) {
+      throw new AppError(404, {
+        message: "No product found with the specified ID.",
       });
-      const json = JSON.stringify(updatedProducts, null, 2);
-
-      fs.writeFileSync(this.path, json);
-    } catch (error) {
-      if ("message" in error) {
-        console.error("Update Error:",error.message);
+    }
+    if (Object.keys(fields).includes("code")) {
+      const productWithSameCode = products.find(
+        (p) => p.code === fields["code"]
+      );
+      if (productWithSameCode && productWithSameCode.id !== Number(id)) {
+        throw new AppError(409, {
+          message:
+            "You can't update the code field because you are entering a code that is already in use.",
+        });
       }
     }
+
+    const updatedProducts = products.map((p) => {
+      if (p.id === foundProduct.id) {
+        return { ...p, ...fields };
+      } else {
+        return p;
+      }
+    });
+    const json = JSON.stringify(updatedProducts, null, 2);
+
+    await fs.promises.writeFile(this.path, json);
   };
 
-  deleteProduct = (id) => {
-    try {
-      if (isNaN(id)) {
-        throw Error("Invalid type or missing ID.");
-      }
-
-      const products = this.readProducts();
-      const foundProduct = products.find((p) => p.id === id);
-      if (!foundProduct) {
-        throw Error("No product found to delete with the specified ID.");
-      }
-
-      const updatedProducts = products.filter((p) => {
-        return p.id !== id;
-      });
-
-      const json = JSON.stringify(updatedProducts, null, 2);
-      fs.writeFileSync(this.path, json);
-    } catch (error) {
-      if ("message" in error) {
-        console.error("Delete Error:",error.message);
-      }
+  deleteProduct = async (id) => {
+    if (isNaN(id)) {
+      throw new AppError(400, { message: "Invalid type or missing ID." });
     }
+
+    const products = await this.readProducts();
+    const foundProduct = products.find((p) => p.id === Number(id));
+    if (!foundProduct) {
+      throw new AppError(404, {
+        message: "No product found to delete with the specified ID.",
+      });
+    }
+
+    const updatedProducts = products.filter((p) => {
+      return p.id !== Number(id);
+    });
+
+    const json = JSON.stringify(updatedProducts, null, 2);
+    await fs.promises.writeFile(this.path, json);
   };
 }
 
-export default ProductManager
-
+export default ProductManager;
