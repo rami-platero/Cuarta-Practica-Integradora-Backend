@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { AppError } from "./src/helpers/AppError";
+import { AppError } from "./src/helpers/AppError.js";
 import fs from 'fs'
 
 class CartManager {
