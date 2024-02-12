@@ -6,7 +6,9 @@
     "thumbnail": "Sin imagen",
     "code": "abc123456",
     "stock": 25,
-    "id": 0
+    "id": 0,
+    "status": true,
+    "category": "motherboard"
   },
   {
     "title": "ASUS ROG Pugio II Gaming Mouse",
@@ -15,7 +17,9 @@
     "thumbnail": "Sin imagen",
     "code": "abc123",
     "stock": 10,
-    "id": 1
+    "id": 1,
+    "status": true,
+    "category": "mouse"
   },
   {
     "title": "Gigabyte GeForce RTX 3070 GAMING OC (rev 1.0)",
@@ -24,7 +28,9 @@
     "thumbnail": "Sin imagen",
     "code": "abc000",
     "stock": 8,
-    "id": 2
+    "id": 2,
+    "status": true,
+    "category": "GPU"
   },
   {
     "title": "ASUS ROG Strix Scope II RX Gaming Keyboard",
@@ -33,7 +39,9 @@
     "thumbnail": "Sin imagen",
     "code": "abc888",
     "stock": 3,
-    "id": 3
+    "id": 3,
+    "status": true,
+    "category": "keyboard"
   },
   {
     "title": "AMD Ryzen 5 3600 6-core, 12-Thread Unlocked Desktop Processor with Wraith Spire Cooler",
@@ -42,7 +50,9 @@
     "thumbnail": "Sin imagen",
     "code": "code456",
     "stock": 10,
-    "id": 4
+    "id": 4,
+    "status": true,
+    "category": "CPU"
   },
   {
     "title": "ASUS ROG Chakram X Gaming Mouse",
@@ -51,7 +61,9 @@
     "thumbnail": "Sin imagen",
     "code": "code0000",
     "stock": 50,
-    "id": 5
+    "id": 5,
+    "status": true,
+    "category": "mouse"
   },
   {
     "title": "MSI GeForce RTX 3090 VENTUS 3X 24G OC",
@@ -60,7 +72,9 @@
     "thumbnail": "Sin imagen",
     "code": "123456789",
     "stock": 5,
-    "id": 6
+    "id": 6,
+    "status": true,
+    "category": "GPU"
   },
   {
     "title": "ASUS ROG Strix Z790-E Gaming WiFi II",
@@ -69,7 +83,9 @@
     "thumbnail": "Sin imagen",
     "code": "code8888",
     "stock": 15,
-    "id": 7
+    "id": 7,
+    "status": true,
+    "category": "motherboard"
   },
   {
     "title": "Gigabyte B650M GAMING X AX",
@@ -78,7 +94,9 @@
     "thumbnail": "Sin imagen",
     "code": "acode777",
     "stock": 10,
-    "id": 8
+    "id": 8,
+    "status": true,
+    "category": "motherboard"
   },
   {
     "title": "ASUS VZ279HEG1R Gaming Monitor – 27 inch Full HD (1920 x 1080), IPS, 75Hz, 1ms MPRT",
@@ -87,6 +105,8 @@
     "thumbnail": "Sin imagen",
     "code": "zxc789",
     "stock": 12,
-    "id": 9
+    "id": 9,
+    "status": true,
+    "category": "monitor"
   }
 ]
