@@ -14,4 +14,14 @@ route.post("/", async (_req, res, next) => {
   }
 });
 
+route.get("/", async (_req,res,next) => {
+  try {
+    const carts = await cartManager.readCart()
+
+    return res.status(200).json(carts)
+  } catch (error) {
+    return next(error)
+  }
+})
+
 export default route;
