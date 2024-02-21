@@ -1,0 +1,121 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+html {
+  font-family: "Inter", sans-serif;
+  color: white;
+  background-color: rgb(14, 14, 14);
+}
+
+body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  h1 {
+    text-align: center;
+  }
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 1rem;
+
+  .product {
+    .title {
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .price {
+      font-weight: 400;
+      font-size: 0.9rem;
+    }
+
+    .deleteBtn {
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      color: white;
+      background-color: rgb(85, 18, 18);
+      border: 1px solid rgba(255, 0, 0, 0.479);
+      transition: 0.2s ease-in-out;
+      font-size: 0.85rem;
+      text-decoration: none;
+      font-weight: 500;
+
+      &:hover {
+        transition: 0.2s ease-in-out;
+        background-color: rgba(202, 18, 18, 0.747);
+      }
+    }
+  }
+}
+
+#form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  h2 {
+    font-weight: 600;
+  }
+
+  button {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    color: white;
+    background-color: rgb(18, 85, 18);
+    border: 1px solid rgba(21, 255, 0, 0.479);
+    transition: 0.2s ease-in-out;
+    font-size: 0.85rem;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      transition: 0.2s ease-in-out;
+      background-color: rgba(70, 202, 18, 0.747);
+    }
+  }
+
+  .fields {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    max-width: 600px;
+    width: 100%;
+
+    div {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      label {
+        font-size: 0.9rem;
+      }
+
+      input {
+        background-color: rgb(31, 31, 31);
+        outline: none;
+        padding: 0.5rem 1rem;
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+      }
+    }
+  }
+}
