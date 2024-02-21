@@ -76,7 +76,7 @@ class ProductManager {
 
     for (const key of allowedKeys) {
       if (!keys.includes(key) && allowedFields[key].required) {
-        throw new AppError(400, { message: "Some fields are empty." });
+        throw new AppError(400, { message: `${key} field is missing.` });
       } else if (!keys.includes(key) && !allowedFields[key].required) {
         product[key] = allowedFields[key].default;
       }
@@ -122,11 +122,14 @@ class ProductManager {
     if (foundProduct) {
       throw new AppError(409, { message: "Code provided is already in use." });
     }
+    const newProduct = { ...product, id: this.id++ }
 
-    products.push({ ...product, id: this.id++ });
+    products.push(newProduct);
 
     const json = JSON.stringify(products, null, 2);
     await fs.promises.writeFile(this.path, json);
+
+    return newProduct
   };
 
   getProductById = async (id) => {
