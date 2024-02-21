@@ -1,6 +1,7 @@
 import { Router } from "express";
 import ProductManager from "../../ProductManager.js";
 import { AppError } from "../helpers/AppError.js";
+import app from '../app.js'
 
 const route = Router();
 const productManager = new ProductManager();
@@ -48,9 +49,12 @@ route.get("/:pid", async (req, res, next) => {
 
 route.post("/", async (req, res, next) => {
   try {
+    const io = app.get("io")
     const body = req.body;
 
-    await productManager.addProduct(body);
+    const newProduct = await productManager.addProduct(body);
+
+    io.emit("add_product", newProduct)
 
     return res.status(200).json({ message: "Product added successfully." });
   } catch (error) {
@@ -73,9 +77,11 @@ route.put("/:pid", async (req, res, next) => {
 
 route.delete("/:pid", async (req, res, next) => {
   try {
+    const io = app.get("io")
     const {pid} = req.params
 
     await productManager.deleteProduct(pid)
+    io.emit("delete_product", pid)
     return res.sendStatus(204)
   } catch (error) {
     return next(error);
