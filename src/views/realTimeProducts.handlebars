@@ -1,0 +1,55 @@
+<main>
+  <h1>Products</h1>
+  <template id="product-template">
+    <div class="product">
+      <h2 class="title"></h2>
+      <h3 class="price"></h3>
+      <button class="deleteBtn">Delete Product</button>
+    </div>
+  </template>
+  <div id="products" class="products">
+    {{#each products}}
+      <div class="product" data-id={{this.id}}>
+        <h2 class="title">{{this.title}}</h2>
+        <h3 class="price">$ {{this.price}}.00</h3>
+        <button class="deleteBtn" data-deleteid={{this.id}}>Delete Product</button>
+      </div>
+    {{/each}}
+  </div>
+  <form id="form">
+    <h2>Create Product</h2>
+    <div class="fields">
+      <div>
+        <label for="title">Title</label>
+        <input type="text" name="title" required />
+      </div>
+      <div>
+        <label for="description">Description</label>
+        <input type="text" name="description" required />
+      </div>
+      <div>
+        <label for="category">Category</label>
+        <input type="text" name="category" required />
+      </div>
+      <div>
+        <label for="price">Price</label>
+        <input type="number" name="price" id="price" required />
+      </div>
+      <div>
+        <label for="code">Code</label>
+        <input type="text" name="code" required />
+      </div>
+      <div>
+        <label for="stock">Stock</label>
+        <input type="number" name="stock" required />
+      </div>
+    </div>
+
+    <button type="submit">Submit</button>
+  </form>
+</main>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/js/index.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
