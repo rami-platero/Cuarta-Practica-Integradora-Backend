@@ -1,0 +1,14 @@
+<main>
+  <h1>Productos</h1>
+  <div id="products" class="products">
+    {{#each products}}
+      <div class="product">
+        <h2 class="title">{{this.title}}</h2>
+        <h3 class="price">$ {{this.price}}.00</h3>
+        <button class="deleteBtn" data-deleteid={{this.id}}>Delete Product</button>
+      </div>
+    {{/each}}
+  </div>
+</main>
+
+<link rel="stylesheet" href="/css/styles.css">
