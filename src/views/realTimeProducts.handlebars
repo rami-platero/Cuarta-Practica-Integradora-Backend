@@ -9,10 +9,10 @@
   </template>
   <div id="products" class="products">
     {{#each products}}
-      <div class="product" data-id={{this.id}}>
+      <div class="product" data-id={{this._id}}>
         <h2 class="title">{{this.title}}</h2>
         <h3 class="price">$ {{this.price}}.00</h3>
-        <button class="deleteBtn" data-deleteid={{this.id}}>Delete Product</button>
+        <button class="deleteBtn" data-deleteid={{this._id}}>Delete Product</button>
       </div>
     {{/each}}
   </div>
