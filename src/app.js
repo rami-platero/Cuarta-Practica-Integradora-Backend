@@ -6,7 +6,9 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 import viewsRouter from "./routes/views.router.js";
 import __dirname from "./utils.js";
 import { Server } from "socket.io";
-import handlebars from 'express-handlebars'
+import handlebars from "express-handlebars";
+import mongoose from "mongoose";
+import { connectDB } from "./dao/database/db.js";
 
 const app = express();
 
@@ -31,11 +33,12 @@ app.use(errorHandler);
 const httpServer = app.listen(app.get("PORT"), () =>
   console.log("Server running on port", app.get("PORT"))
 );
+connectDB()
 const io = new Server(httpServer);
 app.set("io", io);
 
 io.on("connection", (socket) => {
   console.log("connected", socket.id);
-})
+});
 
-export default app
+export default app;
