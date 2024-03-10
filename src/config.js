@@ -1,4 +1,4 @@
 export const config = {
-    productsPath: "./products.json",
-    cartsPath: "./carts.json"
-}
+  productsPath: "./src/dao/FileSystem/files/products.json",
+  cartsPath: "./src/dao/FileSystem/files/carts.json",
+};
