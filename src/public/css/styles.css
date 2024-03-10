@@ -6,6 +6,22 @@ html {
   background-color: rgb(14, 14, 14);
 }
 
+*::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: #060607;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  background-color: #000000;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #b8b8b8;
+}
+
 body {
   box-sizing: border-box;
   margin: 0;
@@ -117,5 +133,85 @@ main {
         border-radius: 0.5rem;
       }
     }
+  }
+}
+
+#chatForm {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  gap: 1rem;
+
+  textarea {
+    width: 90%;
+    padding: 0.5rem;
+    outline: none;
+    background-color: rgb(8, 8, 8);
+    color: white;
+    resize: none;
+  }
+
+  button {
+    width: 15%;
+    background-color: rgb(120, 255, 215);
+    color: black;
+    border: none;
+    border-radius: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+
+    &:hover {
+      transition: 0.2s ease-in-out;
+      background-color: rgb(24, 202, 149);
+    }
+  }
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  background: rgb(32, 32, 32);
+  padding: 1rem;
+  min-height: 600px;
+  max-height: 600px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  .messageBox {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    width: 100%;
+
+    .user {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: rgb(88, 255, 205);
+    }
+
+    .message {
+      font-size: 1rem;
+      font-weight: 300;
+      margin: 0;
+      opacity: 0.8;
+    }
+  }
+}
+
+#title {
+  font-size: 1.8rem;
+
+  span {
+    color: rgb(88, 255, 205);
   }
 }
