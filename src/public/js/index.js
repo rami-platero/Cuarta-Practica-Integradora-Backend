@@ -13,7 +13,7 @@ const notifyError = (message) => {
 
 const $form = document.getElementById("form");
 
-// validations
+// client validations + data parsing
 const validateFields = (data) => {
   const allowedFields = {
     title: {
@@ -64,6 +64,16 @@ const validateFields = (data) => {
   return data;
 };
 
+const formatValidationErrors = (errors) => {
+  let formattedErrors = [];
+
+  errors.forEach((error) => {
+    formattedErrors.push(error.message);
+  });
+
+  return formattedErrors;
+};
+
 const addProduct = async () => {
   try {
     const formData = new FormData($form);
@@ -71,11 +81,22 @@ const addProduct = async () => {
     formData.forEach((value, key) => {
       data[key] = value;
     });
+    // parses data
     const parsedData = validateFields(data);
     await axios.post("/api/products", parsedData);
     $form.reset();
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      if (error.response.status === 409) {
+        // validation error
+        const formattedErrors = formatValidationErrors(
+          error.response.data.error
+        );
+        return formattedErrors.forEach((errorMessage) => {
+          notifyError(errorMessage);
+        });
+      }
+    } else {
       return notifyError(error.response.data.message);
     }
     if ("message" in error) {
@@ -107,8 +128,8 @@ socket.on("add_product", (newProduct) => {
   $template.querySelector(".title").textContent = newProduct.title;
   const formattedPrice = `$ ${newProduct.price}.00`;
   $template.querySelector(".price").textContent = formattedPrice;
-  $template.querySelector("div").dataset.id = newProduct.id;
-  $template.querySelector(".deleteBtn").dataset.deleteid = newProduct.id;
+  $template.querySelector("div").dataset.id = newProduct._id;
+  $template.querySelector(".deleteBtn").dataset.deleteid = newProduct._id;
   let $clone = document.importNode($template, true);
   $fragment.appendChild($clone);
 
