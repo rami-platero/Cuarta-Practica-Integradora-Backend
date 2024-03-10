@@ -1,0 +1,31 @@
+<main>
+  <h1 id="title">Welcome to the Chat!</h1>
+  <template id="message-template">
+    <div class="messageBox">
+      <h2 class="user"></h2>
+      <p class="message"></p>
+    </div>
+  </template>
+  <div class="chat" id="chatBox">
+    {{#each messages}}
+      <div class="messageBox" data-id={{this._id}}>
+        <h2 class="user">{{this.user}}</h2>
+        <p class="message">{{this.message}}</p>
+      </div>
+    {{/each}}
+  </div>
+  <form id="chatForm">
+    <textarea name="message" id="messageInput" placeholder="Write your message..."></textarea>
+    <button type="submit">Send</button>
+  </form>
+</main>
+
+<link rel="stylesheet" href="/css/styles.css" />
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6"></script>
+<script src="/js/chat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/toastify-js"
+></script>
