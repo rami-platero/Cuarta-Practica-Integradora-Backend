@@ -215,3 +215,25 @@ main {
     color: rgb(88, 255, 205);
   }
 }
+
+.pagination {
+  user-select: none;
+  a {
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid white;
+    transition: 0.2s ease-in-out all;
+
+    &:hover {
+      background-color: white;
+      color: black;
+    }
+  }
+
+  .active {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+  }
+}
