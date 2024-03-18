@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { validateCreateProduct, validateDeleteProduct, validateGetProductById, validateUpdateProduct } from "../middlewares/validate.js";
-import { createProduct, deleteProduct, getAllProducts, getProductById, updateProduct } from "../controllers/product.controller.js";
+import { validateCreateProduct, validateDeleteProduct, validateGetProductById, validateGetProducts, validateUpdateProduct } from "../middlewares/validate.js";
+import { createProduct, deleteProduct, getProductById, getProducts, updateProduct } from "../controllers/product.controller.js";
 
-const route = Router();
+const router = Router();
 
-route.get("/", getAllProducts);
-route.get("/:pid", validateGetProductById, getProductById);
-route.post("/", validateCreateProduct, createProduct);
-route.put("/:pid", validateUpdateProduct, updateProduct);
-route.delete("/:pid", validateDeleteProduct, deleteProduct);
+router.get("/", validateGetProducts, getProducts);
+router.get("/:pid", validateGetProductById, getProductById);
+router.post("/", validateCreateProduct, createProduct);
+router.put("/:pid", validateUpdateProduct, updateProduct);
+router.delete("/:pid", validateDeleteProduct, deleteProduct);
 
-export default route;
+export default router;

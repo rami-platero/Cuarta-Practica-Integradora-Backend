@@ -1,11 +1,35 @@
 import { Router } from "express";
-import { addProductToCart, createCart, getAllCarts } from "../controllers/carts.controller.js";
-import { validateAddProductToCart } from "../middlewares/validate.js";
+import {
+  addProductToCart,
+  clearCart,
+  createCart,
+  getAllCarts,
+  getCartByID,
+  removeProductFromCart,
+  updateCartProductsArray,
+  updateProductQuantity,
+} from "../controllers/carts.controller.js";
+import {
+  validateAddProductToCart,
+  validateClearCart,
+  validateGetCartById,
+  validateRemoveProductFromCart,
+  validateUpdateCartProductsArray,
+  validateUpdateProductQuantity,
+} from "../middlewares/validate.js";
 
-const route = Router();
+const router = Router();
 
-route.post("/", createCart);
-route.get("/", getAllCarts);
-route.post("/:cid/product/:pid", validateAddProductToCart, addProductToCart);
+router.route("/").get(getAllCarts).post(createCart);
+router
+  .route("/:cid/products/:pid")
+  .post(validateAddProductToCart, addProductToCart)
+  .delete(validateRemoveProductFromCart, removeProductFromCart)
+  .put(validateUpdateProductQuantity, updateProductQuantity);
+router
+  .route("/:cid")
+  .put(validateUpdateCartProductsArray, updateCartProductsArray)
+  .delete(validateClearCart, clearCart)
+  .get(validateGetCartById, getCartByID);
 
-export default route;
+export default router;
