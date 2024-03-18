@@ -4,22 +4,30 @@ import { AppError } from "../helpers/AppError.js";
 
 export const getAllProducts = async (_req, res, next) => {
   try {
-    /* const { limit } = req.query;
-  
-      if (limit && (isNaN(limit) || Number(limit) < 0)) {
-        throw new AppError(400, { message: "Invalid limit query." });
-      } */
-
     const products = await ProductService.getAllProducts();
 
-    /* if (!limit) {
-        return res.status(200).json({ products });
-      } */
-
-    /* const limitedProducts = products.slice(0, Number(limit)); */
     return res.status(200).send(products);
   } catch (error) {
-    return next();
+    return next(error);
+  }
+};
+
+export const getProducts = async (req, res, next) => {
+  try {
+    const { limit, sort, page, query } = req.query;
+
+    const products = await ProductService.getProducts({
+      limit,
+      sort,
+      page,
+      query,
+    });
+
+    const {docs, ...result} = products
+
+    return res.status(200).json({ status: "success", payload: docs, ...result});
+  } catch (error) {
+    return next(error);
   }
 };
 
@@ -77,7 +85,6 @@ export const deleteProduct = async (req, res, next) => {
     io.emit("delete_product", req.params.pid);
     return res.sendStatus(204);
   } catch (error) {
-    console.log(error);
     return next(error);
   }
 };
