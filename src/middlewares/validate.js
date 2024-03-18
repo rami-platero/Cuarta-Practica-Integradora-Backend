@@ -1,14 +1,20 @@
 import { z } from "zod";
 import {
   createBodyProductSchema,
+  paginateProductsSchema,
   productIDSchema,
   updateBodyProductSchema,
 } from "../schemas/product.schema.js";
 import { messageSchema } from "../schemas/message.schema.js";
-import { addProductToCartSchema } from "../schemas/carts.schema.js";
+import {
+  cartProductsSchema,
+  cartIDSchema,
+  updateProductQuantitySchema,
+  validateCartProductsArraySchema,
+} from "../schemas/carts.schema.js";
 
 export const validate =
-  (bodySchema, paramsSchema) => async (req, res, next) => {
+  (bodySchema, paramsSchema, queryParamsSchema) => async (req, res, next) => {
     try {
       if (bodySchema) {
         const body = await bodySchema.parseAsync(req.body);
@@ -17,6 +23,10 @@ export const validate =
       if (paramsSchema) {
         const params = await paramsSchema.parseAsync(req.params);
         req.params = params;
+      }
+      if (queryParamsSchema) {
+        const queryParams = await queryParamsSchema.parseAsync(req.query);
+        req.query = queryParams;
       }
       return next();
     } catch (error) {
@@ -40,6 +50,22 @@ export const validateUpdateProduct = validate(
   productIDSchema
 );
 export const validateDeleteProduct = validate(undefined, productIDSchema);
-export const validateGetProductById = validate(undefined, productIDSchema)
-export const validateCreateMessage = validate(messageSchema)
-export const validateAddProductToCart = validate(undefined, addProductToCartSchema)
+export const validateGetProductById = validate(undefined, productIDSchema);
+export const validateCreateMessage = validate(messageSchema);
+export const validateAddProductToCart = validate(undefined, cartProductsSchema);
+export const validateRemoveProductFromCart = validate(
+  undefined,
+  cartProductsSchema
+);
+export const validateUpdateProductQuantity = validate(
+  updateProductQuantitySchema,
+  cartProductsSchema
+);
+export const validateClearCart = validate(undefined, cartIDSchema);
+export const validateGetCartById = validate(undefined, cartIDSchema);
+export const validateGetProducts = validate(
+  undefined,
+  undefined,
+  paginateProductsSchema
+);
+export const validateUpdateCartProductsArray = validate(validateCartProductsArraySchema, cartIDSchema)
