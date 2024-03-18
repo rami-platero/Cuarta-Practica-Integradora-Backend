@@ -9,4 +9,5 @@ const schema = new Schema({
   ],
 });
 
-export default model("Cart", schema);
+const Cart = model("carts", schema);
+export default Cart

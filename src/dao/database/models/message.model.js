@@ -11,4 +11,5 @@ const schema = new Schema({
     }
 })
 
-export default model("Message", schema)
+const Message = model("messages", schema)
+export default Message
