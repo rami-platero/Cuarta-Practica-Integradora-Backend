@@ -1,0 +1,17 @@
+<div>
+  {{#if cart}}
+    <h1>Cart: {{cart._id}}</h1>
+
+    {{#each cart.products}}
+      <div class="product">
+        <h2 class="title">{{this.product.title}}</h2>
+        <h3 class="quantity">Quantity: {{this.quantity}}</h3>
+        <h3 class="price">$ {{this.product.price}}.00</h3>
+      </div>
+    {{/each}}
+  {{else}}
+    <h1>The cart you are trying to view doesn't exist!</h1>
+    <a href="/">Back to home</a>
+  {{/if}}
+
+</div>
