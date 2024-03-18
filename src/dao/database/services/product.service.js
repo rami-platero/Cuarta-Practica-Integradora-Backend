@@ -19,16 +19,30 @@ class ProductService {
   };
 
   static deleteProduct = async (id) => {
-    return await Product.deleteOne({_id: id})
-  }
+    return await Product.deleteOne({ _id: id });
+  };
 
   static getAllProducts = async () => {
-    return await Product.find()
-  }
+    return await Product.find();
+  };
 
   static getProductById = async (id) => {
-    return await Product.findById(id)
-  }
+    return await Product.findById(id);
+  };
+
+  static getProducts = async ({ limit, page, query, sort }) => {
+    return await Product.paginate(
+      { title: { $regex: query, $options: "i" } },
+      {
+        limit: Number(limit),
+        page: Number(page),
+        sort: {
+          price: sort,
+        },
+        lean: true,
+      }
+    );
+  };
 }
 
 export default ProductService;
