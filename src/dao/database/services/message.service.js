@@ -2,7 +2,7 @@ import Message from "../models/message.model.js";
 
 class MessageService {
   static getAllMessages = async () => {
-    return await Message.find();
+    return await Message.find({}).lean(true)
   };
 
   static createMessage = async (body) => {
