@@ -1,0 +1,36 @@
+<main>
+  <h1>Products</h1>
+  <div id="products" class="products">
+
+    {{#if products}}
+      {{#each products}}
+      <div class="product">
+        <h2 class="title">{{this.title}}</h2>
+        <h3 class="price">$ {{this.price}}.00</h3>
+        <button class="addToCart" data-id={{this._id}}>Add to cart</button>
+      </div> 
+      {{/each}}
+    {{else}}
+    <h2>No products found.</h2>
+    {{/if}}
+    
+  </div>
+
+  {{#ifGreater totalPages 1}}
+    <div class="pagination">
+        {{#times totalPages}}
+          {{#ifEquals this ../page}}
+            <a class="active">{{this}}</a>
+          {{else}}
+            <a href="{{updateQueryParam 'page' this ../queries}}">{{this}}</a>
+          {{/ifEquals}}
+        {{/times}}
+    </div>
+  {{/ifGreater}}
+  
+</main>
+
+<link rel="stylesheet" href="/css/styles.css" />
+<script src="/js/products.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
