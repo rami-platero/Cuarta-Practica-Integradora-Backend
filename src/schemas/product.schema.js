@@ -51,12 +51,14 @@ export const createBodyProductSchema = product.extend({
     .optional()
     .default([]),
 });
+
 export const updateBodyProductSchema = product
   .extend({
     status: z.boolean(),
   })
   .partial()
   .strict();
+
 export const productIDSchema = z.object({
   pid: z
     .string({
@@ -65,4 +67,36 @@ export const productIDSchema = z.object({
     .refine((value) => {
       return mongoose.Types.ObjectId.isValid(value);
     }, "You entered an invalid ID type."),
+});
+
+export const paginateProductsSchema = z.object({
+  limit: z
+    .any()
+    .optional()
+    .refine(
+      (value) => {
+        return !isNaN(value);
+      },
+      {
+        message: "Limit must be a number.",
+      }
+    )
+    .default(1000),
+  sort: z.enum(["asc", "desc"]).optional().default("asc"),
+  page: z
+    .any()
+    .optional()
+    .refine(
+      (value) => {
+        return !isNaN(value);
+      },
+      {
+        message: "Page must be a number.",
+      }
+    )
+    .default(1),
+  query: z
+    .any()
+    .optional()
+    .default(""),
 });
