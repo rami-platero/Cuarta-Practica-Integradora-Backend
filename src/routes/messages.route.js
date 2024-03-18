@@ -2,9 +2,9 @@ import { Router } from "express";
 import { createMessage, getMessages } from "../controllers/messages.controller.js";
 import { validateCreateMessage } from "../middlewares/validate.js";
 
-const route = Router()
+const router = Router()
 
-route.get("/", getMessages)
-route.post("/", validateCreateMessage, createMessage)
+router.get("/", getMessages)
+router.post("/", validateCreateMessage, createMessage)
 
-export default route
+export default router
