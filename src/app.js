@@ -1,12 +1,13 @@
 import express from "express";
 import morgan from "morgan";
+import { Server } from "socket.io";
 import productsRoute from "./routes/products.route.js";
 import cartsRoute from "./routes/carts.route.js";
 import messagesRoute from "./routes/messages.route.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import viewsRouter from "./routes/views.router.js";
 import __dirname from "./utils.js";
-import { Server } from "socket.io";
+import { swaggerDocs } from "./utils/swagger.js";
 import handlebars from "express-handlebars";
 import { connectDB } from "./dao/database/db.js";
 import hbsHelpers from "./helpers/handlebars.helpers.js";
@@ -20,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 const hbs = handlebars.create({
-  helpers: hbsHelpers
+  helpers: hbsHelpers,
 });
 
 app.engine("handlebars", hbs.engine);
@@ -37,9 +38,10 @@ app.use("/api/messages", messagesRoute);
 
 app.use(errorHandler);
 
-const httpServer = app.listen(app.get("PORT"), () =>
-  console.log("Server running on port", app.get("PORT"))
-);
+const httpServer = app.listen(app.get("PORT"), () => {
+  console.log("Server running on port", app.get("PORT"));
+  swaggerDocs(app, app.get("PORT"));
+});
 connectDB();
 const io = new Server(httpServer);
 app.set("io", io);
