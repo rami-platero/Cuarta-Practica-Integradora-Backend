@@ -3,6 +3,10 @@ import Cart from "../models/cart.model.js";
 import Product from "../models/product.model.js";
 import ProductService from "./product.service.js";
 
+/**
+ * @class
+ */
+
 class CartService {
   static createCart = async () => {
     return await Cart.create({ products: [] });
@@ -17,6 +21,9 @@ class CartService {
   };
 
   static addProductToCart = async ({ cid, pid }) => {
+    /**
+     * @type {import('../../../types/types.js').Cart | null}
+     */
     const foundCart = await Cart.findById(cid).populate("products.product");
     if (!foundCart) {
       throw new AppError(404, {
@@ -31,45 +38,48 @@ class CartService {
       });
     }
 
-    const productInCart = foundCart.products.some((p) => {
+    const productInCart = foundCart.products.find((p) => {
       return p.product == pid;
     });
 
-    if (
-      productInCart &&
-      productInCart.product.stock < productInCart.quantity + 1
-    ) {
-      throw new AppError(400, {message: "The quantity you're trying to add exceeds the available stock for this product."})
-    }
-
-    if (!productInCart && foundProduct.stock === 0){
-      throw new AppError(400, {message: "This product is out of stock!"})
-    }
-
     if (!productInCart) {
-        return await Cart.findByIdAndUpdate(
-          cid,
-          {
-            $push: {
-              products: {
-                quantity: 1,
-                product: pid,
-              },
-            },
-          },
-          { new: true }
-        );
-      } else {
-        return await Cart.findOneAndUpdate(
-          { _id: cid, "products.product": pid },
-          {
-            $inc: {
-              "products.$.quantity": 1,
-            },
-          },
-          { new: true }
-        );
+      if (foundProduct.stock === 0) {
+        throw new AppError(400, { message: "This product is out of stock!" });
       }
+
+      return await Cart.findByIdAndUpdate(
+        cid,
+        {
+          $push: {
+            products: {
+              quantity: 1,
+              product: pid,
+            },
+          },
+        },
+        { new: true }
+      );
+    } else {
+      if (
+        "stock" in productInCart.product &&
+        productInCart.product.stock < productInCart.quantity + 1
+      ) {
+        throw new AppError(400, {
+          message:
+            "The quantity you're trying to add exceeds the available stock for this product.",
+        });
+      }
+
+      return await Cart.findOneAndUpdate(
+        { _id: cid, "products.product": pid },
+        {
+          $inc: {
+            "products.$.quantity": 1,
+          },
+        },
+        { new: true }
+      );
+    }
   };
 
   static removeProductFromCart = async ({ cid, pid }) => {
