@@ -1,5 +1,16 @@
 <main>
   <h1>Products</h1>
+
+  {{#if user}}
+    <div class="userContainer">
+      <h2>Welcome {{user.username}}!</h2>
+      <h3>Username: <span>{{user.username}}</span></h3>
+      <h3>Email address: <span>{{user.email}}</span></h3>
+      <h3>Role: <span>{{user.role}}</span></h3>
+      <button id="logout">Log out</button>
+    </div>
+  {{/if}}
+
   <div id="products" class="products">
 
     {{#if products}}
