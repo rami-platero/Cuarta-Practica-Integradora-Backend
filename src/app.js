@@ -58,7 +58,7 @@ app.use("/", viewsRoute);
 app.use("/api/products", productsRoute);
 app.use("/api/carts", cartsRoute);
 app.use("/api/messages", messagesRoute);
-app.use("/api/auth/", authRoute);
+app.use("/api/auth", authRoute);
 
 app.use(errorHandler);
 
