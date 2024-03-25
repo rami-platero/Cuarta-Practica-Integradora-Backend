@@ -45,6 +45,7 @@ router.get("/products", validateGetProducts, async (req, res) => {
     totalPages: result.totalPages,
     page: result.page,
     queries: queryString,
+    user: req.session.user
   });
 });
 
@@ -56,5 +57,19 @@ router.get("/carts/:cid", validateGetCartById, async (req, res) => {
     cart: foundCart,
   });
 });
+
+router.get("/login", async (req,res) => {
+  if(req.session.user){
+    return res.redirect("/products")
+  }
+  return res.render("login")
+})
+
+router.get("/register", async (req,res) => {
+  if(req.session.user){
+    return res.redirect("/products")
+  }
+  return res.render("register")
+})
 
 export default router;
