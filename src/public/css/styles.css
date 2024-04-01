@@ -253,3 +253,18 @@ main {
     width: fit-content;
   }
 }
+
+.githubLink {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border: 1px solid white;
+  border-radius: 10px;
+  width: fit-content;
+  transition: 0.2s ease-in-out all;
+
+  &:hover {
+    background-color: white;
+    color: black;
+  }
+}
