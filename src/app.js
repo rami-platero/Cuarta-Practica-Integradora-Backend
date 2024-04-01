@@ -16,6 +16,8 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import { config } from "./config.js";
+import passport from "passport";
+import initializePassport from "./config/passport.config.js";
 
 const app = express();
 
@@ -41,6 +43,9 @@ app.use(
     saveUninitialized: false,
   })
 );
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 app.use(morgan("dev"));
 
 const hbs = handlebars.create({
