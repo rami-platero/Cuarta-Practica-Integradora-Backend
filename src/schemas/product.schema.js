@@ -81,7 +81,7 @@ export const paginateProductsSchema = z.object({
         message: "Limit must be a number.",
       }
     )
-    .default(1000),
+    .default(5),
   sort: z.enum(["asc", "desc"]).optional().default("asc"),
   page: z
     .any()
