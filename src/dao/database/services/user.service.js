@@ -3,7 +3,15 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 
 class UserService {
-  static register = async ({ username, email, password: pass, strategy }) => {
+  static register = async ({
+    firstName,
+    lastName,
+    age,
+    email,
+    password: pass,
+    strategy,
+    username
+  }) => {
     try {
       // registering with GitHub
       if (strategy === "github") {
@@ -11,14 +19,21 @@ class UserService {
           email,
           password: null,
           username,
-        }).toObject();
+        })
       }
 
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(pass, salt);
 
       const { password, ...newUser } = (
-        await User.create({ email, password: hashedPassword, username })
+        await User.create({
+          email,
+          password: hashedPassword,
+          firstName,
+          lastName,
+          username: `${firstName} ${lastName}`,
+          age: Number(age),
+        })
       ).toObject();
 
       return newUser;
