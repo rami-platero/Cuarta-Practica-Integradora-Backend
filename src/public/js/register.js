@@ -55,7 +55,7 @@ const handleRegister = async () => {
     });
 
     const result = await axios.post("/api/auth/register", data);
-    if(result.status === 200) {
+    if(result.status === 201) {
       window.location.replace("/products")
     }
   } catch (error) {
