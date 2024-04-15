@@ -13,9 +13,6 @@ import handlebars from "express-handlebars";
 import { connectDB } from "./dao/database/db.js";
 import hbsHelpers from "./helpers/handlebars.helpers.js";
 import cookieParser from "cookie-parser";
-import session from "express-session";
-import MongoStore from "connect-mongo";
-import { config } from "./config.js";
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
 
@@ -27,25 +24,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(
-  session({
-    store: MongoStore.create({
-      mongoUrl: config.MONGODB_URI,
-      mongoOptions: {
-        // @ts-ignore
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      },
-      ttl: 15,
-    }),
-    secret: "adadasda",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
 initializePassport()
 app.use(passport.initialize())
-app.use(passport.session())
 app.use(morgan("dev"));
 
 const hbs = handlebars.create({
