@@ -12,6 +12,7 @@ import {
   updateProductQuantitySchema,
   validateCartProductsArraySchema,
 } from "../schemas/carts.schema.js";
+import { registerSchema } from "../schemas/user.schema.js";
 
 export const validate =
   (bodySchema, paramsSchema, queryParamsSchema) => async (req, res, next) => {
@@ -69,3 +70,5 @@ export const validateGetProducts = validate(
   paginateProductsSchema
 );
 export const validateUpdateCartProductsArray = validate(validateCartProductsArraySchema, cartIDSchema)
+
+export const validateRegisterUser = validate(registerSchema)
