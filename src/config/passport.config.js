@@ -1,58 +1,19 @@
 import passport from "passport";
-import local from "passport-local";
 import GitHubStrategy from "passport-github2";
 import User from "../dao/database/models/user.model.js";
 import { config } from "../config.js";
 import UserService from "../dao/database/services/user.service.js";
+import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 
-const LocalStrategy = local.Strategy;
+const cookieExtractor = req => {
+  let token = null;
+  if (req && req.cookies) { 
+      token = req.cookies['jwtCookieToken'];
+  }
+  return token;
+};
 
 const initializePassport = () => {
-  passport.use(
-    "register",
-    new LocalStrategy(
-      {
-        passReqToCallback: true,
-        usernameField: "email",
-      },
-      async (req, _username, _password, done) => {
-        try {
-          console.log("registering", req.body);
-          const { username, email, password } = req.body;
-          const user = await UserService.register({
-            email,
-            password,
-            username,
-          });
-
-          return done(null, user);
-        } catch (error) {
-          return done(error);
-        }
-      }
-    )
-  );
-
-  passport.use(
-    "login",
-    new LocalStrategy(
-      {
-        usernameField: "email",
-        passReqToCallback: true,
-      },
-      async (req, _username, _password, done) => {
-        try {
-          const { email, password } = req.body;
-
-          const user = await UserService.login({ email, password });
-
-          return done(null, user);
-        } catch (error) {
-          return done(error);
-        }
-      }
-    )
-  );
 
   passport.use(
     "github",
@@ -76,12 +37,28 @@ const initializePassport = () => {
               username: profile._json.name,
               strategy: "github",
             });
-            return done(null, newUser);
+            return done(null, newUser.toObject());
           }
-          return done(null, foundUser);
+          return done(null, foundUser.toObject());
         } catch (error) {
           return done(error);
         }
+      }
+    )
+  );
+
+  passport.use(
+    new JwtStrategy(
+      {
+        jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+        secretOrKey: config.JWT_SECRET_KEY,
+      },
+      (jwt_payload, done) => {
+        try {
+          return done(null, jwt_payload.user);
+      } catch (error) {
+          return done(error);
+      }
       }
     )
   );
