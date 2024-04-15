@@ -90,3 +90,11 @@ export const loginWithGitHub = async (req,res,next) => {
     return next(error)
   }
 }
+
+export const getCurrentUser = (req,res,next) => {
+  try {
+    return res.status(200).json({user: req.user})
+  } catch (error) {
+    return next(error)
+  }
+}
