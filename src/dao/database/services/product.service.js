@@ -30,7 +30,8 @@ class ProductService {
     return await Product.findById(id);
   };
 
-  static getProducts = async ({ limit, page, query, sort }) => {
+  static getProducts = async ({ limit, page = 1, query, sort }) => {
+    // @ts-ignore
     return await Product.paginate(
       { title: { $regex: query, $options: "i" } },
       {
