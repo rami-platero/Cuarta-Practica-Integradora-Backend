@@ -6,7 +6,7 @@ import {
   validateGetProducts,
 } from "../middlewares/validate.js";
 import CartService from "../dao/database/services/carts.service.js";
-import { passportCall } from "../utils/passport.js";
+import { passportCall } from "../middlewares/passport.js";
 
 const router = Router();
 
