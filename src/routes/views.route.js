@@ -6,6 +6,7 @@ import {
   validateGetProducts,
 } from "../middlewares/validate.js";
 import CartService from "../dao/database/services/carts.service.js";
+import { passportCall } from "../utils/passport.js";
 
 const router = Router();
 
@@ -34,18 +35,19 @@ router.get("/chat", async (_req, res) => {
   });
 });
 
-router.get("/products", validateGetProducts, async (req, res) => {
+router.get("/products", validateGetProducts, passportCall('jwt'), async (req, res) => {
   const { limit, page, query, sort } = req.query;
   // @ts-ignore
   const queryString = req._parsedOriginalUrl.query;
 
   const result = await ProductService.getProducts({ limit, page, query, sort });
+  console.log(req.user);
   return res.render("products", {
     products: result.docs,
     totalPages: result.totalPages,
     page: result.page,
     queries: queryString,
-    user: req.session.user
+    user: req.user
   });
 });
 
@@ -58,15 +60,15 @@ router.get("/carts/:cid", validateGetCartById, async (req, res) => {
   });
 });
 
-router.get("/login", async (req,res) => {
-  if(req.session.user){
+router.get("/login", passportCall('jwt'), async (req,res) => {
+  if(req.user){
     return res.redirect("/products")
   }
   return res.render("login")
 })
 
-router.get("/register", async (req,res) => {
-  if(req.session.user){
+router.get("/register", passportCall('jwt'), async (req,res) => {
+  if(req.user){
     return res.redirect("/products")
   }
   return res.render("register")
