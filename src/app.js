@@ -15,6 +15,8 @@ import hbsHelpers from "./helpers/handlebars.helpers.js";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
+import session from "express-session";
+import { config } from "./config.js";
 
 const app = express();
 
@@ -25,6 +27,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 initializePassport()
+app.use(session({
+  secret: config.SESSION_SECRET_CODE
+}))
 app.use(passport.initialize())
 app.use(morgan("dev"));
 
