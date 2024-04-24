@@ -1,3 +1,4 @@
+import { config } from "../../../config/variables.config.js";
 import { AppError } from "../../../helpers/AppError.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
@@ -10,7 +11,7 @@ class UserService {
     email,
     password: pass,
     strategy,
-    username
+    username,
   }) => {
     try {
       // registering with GitHub
@@ -19,7 +20,7 @@ class UserService {
           email,
           password: null,
           username,
-        })
+        });
       }
 
       const salt = await bcrypt.genSalt(10);
@@ -46,7 +47,7 @@ class UserService {
   };
 
   static login = async ({ email, password: pass }) => {
-    if (email === "adminCoder@coder.com" && pass === "adminCod3r123") {
+    if (email === config.ADMIN_EMAIL && pass === config.ADMIN_PASSWORD) {
       return {
         email,
         username: "Coderhouse",
