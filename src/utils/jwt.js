@@ -1,4 +1,4 @@
-import { config } from "../config.js";
+import { config } from "../config/variables.config.js";
 import jwt from "jsonwebtoken";
 
 export const generateJWToken = (user) => {
