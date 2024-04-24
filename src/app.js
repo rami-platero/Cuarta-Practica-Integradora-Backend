@@ -6,7 +6,7 @@ import cartsRoute from "./routes/carts.route.js";
 import messagesRoute from "./routes/messages.route.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import viewsRoute from "./routes/views.route.js";
-import authRoute from './routes/auth.route.js'
+import authRoute from "./routes/auth.route.js";
 import __dirname from "./utils.js";
 import { swaggerDocs } from "./utils/swagger.js";
 import handlebars from "express-handlebars";
@@ -16,7 +16,7 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
 import session from "express-session";
-import { config } from "./config.js";
+import { config } from "./config/variables.config.js";
 
 const app = express();
 
@@ -26,11 +26,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-initializePassport()
-app.use(session({
-  secret: config.SESSION_SECRET_CODE
-}))
-app.use(passport.initialize())
+initializePassport();
+app.use(
+  session({
+    secret: config.SESSION_SECRET_CODE,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(passport.initialize());
 app.use(morgan("dev"));
 
 const hbs = handlebars.create({
