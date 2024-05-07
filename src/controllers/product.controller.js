@@ -1,10 +1,10 @@
 import app from "../app.js";
-import ProductService from "../dao/database/services/product.service.js";
 import { AppError } from "../helpers/AppError.js";
+import { productService } from "../services/service.js";
 
 export const getAllProducts = async (_req, res, next) => {
   try {
-    const products = await ProductService.getAllProducts();
+    const products = await productService.getAllProducts();
 
     return res.status(200).send(products);
   } catch (error) {
@@ -16,7 +16,7 @@ export const getProducts = async (req, res, next) => {
   try {
     const { limit, sort, page, query } = req.query;
 
-    const products = await ProductService.getProducts({
+    const products = await productService.getProducts({
       limit,
       sort,
       page,
@@ -33,7 +33,7 @@ export const getProducts = async (req, res, next) => {
 
 export const getProductById = async (req, res, next) => {
   try {
-    const foundProduct = await ProductService.getProductById(req.params.pid);
+    const foundProduct = await productService.getProductById(req.params.pid);
 
     if (!foundProduct) {
       throw new AppError(404, { message: "Product not found" });
@@ -49,7 +49,7 @@ export const createProduct = async (req, res, next) => {
   try {
     const io = app.get("io");
 
-    const newProduct = await ProductService.createProduct(req.body);
+    const newProduct = await productService.createProduct(req.body);
 
     io.emit("add_product", newProduct);
 
@@ -63,7 +63,7 @@ export const createProduct = async (req, res, next) => {
 
 export const updateProduct = async (req, res, next) => {
   try {
-    const updatedProduct = await ProductService.updateProduct(
+    const updatedProduct = await productService.updateProduct(
       req.body,
       req.params.pid
     );
@@ -81,7 +81,7 @@ export const deleteProduct = async (req, res, next) => {
   try {
     const io = app.get("io");
 
-    await ProductService.deleteProduct(req.params.pid);
+    await productService.deleteProduct(req.params.pid);
     io.emit("delete_product", req.params.pid);
     return res.sendStatus(204);
   } catch (error) {

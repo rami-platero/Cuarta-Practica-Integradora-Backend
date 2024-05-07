@@ -1,11 +1,11 @@
-import UserService from "../dao/database/services/user.service.js";
+import { userService } from "../services/service.js";
 import { generateJWToken } from "../utils/jwt.js";
 
 export const Register = async (req, res, next) => {
   try {
     const { lastName, firstName, age, email, password } = req.body;
 
-    const newUser = await UserService.register({
+    const newUser = await userService.register({
       email,
       firstName,
       lastName,
@@ -37,7 +37,7 @@ export const Login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const user = await UserService.login({ email, password });
+    const user = await userService.login({ email, password });
 
     const tokenUser = {
       name: user.username,
