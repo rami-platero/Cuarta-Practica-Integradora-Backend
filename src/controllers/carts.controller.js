@@ -102,3 +102,15 @@ export const updateCartProductsArray = async (req,res,next) => {
     return next(error)
   }
 }
+
+export const purchaseItems = async (req,res,next) => {
+  try {
+    const {cid} = req.params
+    const {purchaserEmail} = req.body
+
+    const ticket = await cartsService.purchaseItems(cid, purchaserEmail)
+    return res.status(201).json(ticket)
+  } catch (error) {
+    return next(error)
+  }
+}
