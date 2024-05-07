@@ -1,35 +1,29 @@
 import { Router } from "express";
-import MessageService from "../dao/database/services/message.service.js";
-import ProductService from "../dao/database/services/product.service.js";
 import {
   validateGetCartById,
   validateGetProducts,
 } from "../middlewares/validate.js";
-import CartService from "../dao/database/services/carts.service.js";
 import { passportCall } from "../middlewares/passport.js";
+import { cartsService, messageService, productService } from "../services/service.js";
 
 const router = Router();
 
 router.get("/", async (_req, res) => {
-  const products = await ProductService.getAllProducts();
+  const products = await productService.getAllProducts();
   return res.render("home", {
-    products: products.map((p) => {
-      return p.toJSON();
-    }),
+    products,
   });
 });
 
 router.get("/realTimeProducts", async (_req, res) => {
-  const products = await ProductService.getAllProducts();
+  const products = await productService.getAllProducts();
   return res.render("realTimeProducts", {
-    products: products.map((p) => {
-      return p.toJSON();
-    }),
+    products
   });
 });
 
 router.get("/chat", async (_req, res) => {
-  const messages = await MessageService.getAllMessages();
+  const messages = await messageService.getAllMessages();
   return res.render("chat", {
     messages,
   });
@@ -40,7 +34,7 @@ router.get("/products", validateGetProducts, passportCall('jwt'), async (req, re
   // @ts-ignore
   const queryString = req._parsedOriginalUrl.query;
 
-  const result = await ProductService.getProducts({ limit, page, query, sort });
+  const result = await productService.getProducts({ limit, page, query, sort });
   console.log(req.user);
   return res.render("products", {
     products: result.docs,
@@ -54,7 +48,7 @@ router.get("/products", validateGetProducts, passportCall('jwt'), async (req, re
 router.get("/carts/:cid", validateGetCartById, async (req, res) => {
   const { cid } = req.params;
 
-  const foundCart = await CartService.getCartByID(cid);
+  const foundCart = await cartsService.getCartByID(cid);
   return res.render("cart", {
     cart: foundCart,
   });
