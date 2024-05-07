@@ -2,7 +2,7 @@ import Cart from "../models/cart.model.js";
 
 export default class CartsMongo {
   create = async () => {
-    return await Cart.create();
+    return await Cart.create({products: []})
   };
   findAll = async () => {
     const carts = await Cart.find().lean(true);
