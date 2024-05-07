@@ -28,4 +28,7 @@ export default class ProductMongo {
   deleteOneById = async (id) => {
     return await Product.deleteOne({ _id: id });
   };
+  updateStock = async (id,newStock) => {
+    return await Product.updateOne({_id: id}, {$set: {stock: newStock}})
+  }
 }
