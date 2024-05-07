@@ -21,6 +21,10 @@ export default class ProductRepository {
     return await this.dao.findByIdAndUpdate(id, upFields);
   };
 
+  updateProductStock = async (id,newStock) => {
+    return await this.dao.updateStock(id,newStock)
+  }
+
   deleteProduct = async (id) => {
     return await this.dao.deleteOneById(id);
   };
