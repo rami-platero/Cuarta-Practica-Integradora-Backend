@@ -5,6 +5,7 @@ import {
   createCart,
   getAllCarts,
   getCartByID,
+  purchaseItems,
   removeProductFromCart,
   updateCartProductsArray,
   updateProductQuantity,
@@ -17,13 +18,15 @@ import {
   validateUpdateCartProductsArray,
   validateUpdateProductQuantity,
 } from "../middlewares/validate.js";
+import { passportCall } from "../middlewares/passport.js";
+import { isAuthenticated } from "../middlewares/authJwt.js";
 
 const router = Router();
 
 router.route("/").get(getAllCarts).post(createCart);
 router
   .route("/:cid/products/:pid")
-  .post(validateAddProductToCart, addProductToCart)
+  .post(validateAddProductToCart, passportCall('jwt'), isAuthenticated, addProductToCart)
   .delete(validateRemoveProductFromCart, removeProductFromCart)
   .put(validateUpdateProductQuantity, updateProductQuantity);
 router
@@ -31,5 +34,6 @@ router
   .put(validateUpdateCartProductsArray, updateCartProductsArray)
   .delete(validateClearCart, clearCart)
   .get(validateGetCartById, getCartByID);
+router.post("/:cid/purchase", purchaseItems)  
 
 export default router;
