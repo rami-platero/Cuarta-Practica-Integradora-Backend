@@ -4,7 +4,7 @@ const schema = new Schema({
   products: [
     {
       quantity: {
-        type: String,
+        type: Number,
         required: true
       },
       product: { type: Schema.Types.ObjectId, ref: "products" },
