@@ -1,7 +1,7 @@
 import { connect } from "mongoose";
-import { config } from "../../config/variables.config.js";
+import { config } from "../../../config/variables.config.js"; 
 
-export const connectDB = async () => {
+export const initMongoConnection = async () => {
   try {
     // @ts-ignore
     await connect(config.MONGODB_URI);
