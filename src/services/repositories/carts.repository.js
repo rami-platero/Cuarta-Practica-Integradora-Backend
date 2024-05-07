@@ -1,9 +1,10 @@
 import { AppError } from "../../helpers/AppError.js";
 
 export default class CartsRepository {
-  constructor(dao, productService) {
+  constructor(dao, productService, ticketService) {
     this.dao = dao;
     this.productService = productService;
+    this.ticketService = ticketService;
   }
 
   createCart = async () => {
@@ -37,7 +38,7 @@ export default class CartsRepository {
     }
 
     const productInCart = foundCart.products.find((p) => {
-      return p.product == pid;
+      return p.product._id.toString() == pid;
     });
 
     if (!productInCart) {
@@ -56,7 +57,7 @@ export default class CartsRepository {
             "The quantity you're trying to add exceeds the available stock for this product.",
         });
       }
-
+      console.log("increase");
       return await this.dao.increaseItemQuantity(cid, pid);
     }
   };
@@ -138,5 +139,48 @@ export default class CartsRepository {
     }
 
     return await this.dao.findOneAndUpdateProducts(cid);
+  };
+
+  purchaseItems = async (cid, purchaserEmail) => {
+    const foundCart = await this.dao.findById(cid);
+    if (!foundCart) {
+      throw new AppError(404, {
+        message: "A cart with the specified ID does not exist.",
+      });
+    }
+
+    let total = 0;
+    const outOfStockItemsIds = [];
+
+    for (const cartItem of foundCart.products) {
+      const foundProduct = await this.productService.getProductById
+      (
+        cartItem.product._id
+      );
+      if (foundProduct.stock >= cartItem.quantity) {
+        total += cartItem.quantity * foundProduct.price 
+
+        const newStock = foundProduct.stock - cartItem.quantity;
+        await this.productService.updateProductStock(
+          foundProduct._id,
+          newStock
+        );
+        await this.dao.removeItem(foundCart._id, foundProduct._id);
+      } else {
+        outOfStockItemsIds.push(cartItem.product._id);
+      }
+    }
+
+    if (outOfStockItemsIds.length === foundCart.products.length) {
+      throw new AppError(
+        400,
+        JSON.stringify({
+          message: "All of the items in your cart are out of stock.",
+          items: outOfStockItemsIds,
+        })
+      );
+    }
+
+    return await this.ticketService.create(total, purchaserEmail);
   };
 }
