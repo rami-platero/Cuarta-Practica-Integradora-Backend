@@ -66,6 +66,9 @@ const createMessage = async () => {
           notifyError(errorMessage);
         });
       }
+      if(error.response.status === 401){
+        notifyError(error.response.data.message);
+      }
     } else {
       notifyError("Internal server error.");
     }
