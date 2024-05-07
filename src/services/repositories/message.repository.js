@@ -1,13 +1,13 @@
-import Message from "../models/message.model.js";
+export default class MessageRepository {
+  constructor(dao){
+    this.dao = dao
+  }
 
-class MessageService {
-  static getAllMessages = async () => {
-    return await Message.find({}).lean(true)
+  getAllMessages = async () => {
+    return await this.dao.findAll()
   };
 
-  static createMessage = async (body) => {
-    return await Message.create({ message: body.message, user: body.user });
+  createMessage = async (data) => {
+    return await this.dao.create(data)
   };
 }
-
-export default MessageService;

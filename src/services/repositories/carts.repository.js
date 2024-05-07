@@ -1,37 +1,35 @@
-import { AppError } from "../../../helpers/AppError.js";
-import Cart from "../models/cart.model.js";
-import Product from "../models/product.model.js";
-import ProductService from "./product.service.js";
+import { AppError } from "../../helpers/AppError.js";
 
-/**
- * @class
- */
+export default class CartsRepository {
+  constructor(dao, productService) {
+    this.dao = dao;
+    this.productService = productService;
+  }
 
-class CartService {
-  static createCart = async () => {
-    return await Cart.create({ products: [] });
+  createCart = async () => {
+    return await this.dao.create();
   };
 
-  static getAllCarts = async () => {
-    return await Cart.find();
+  getAllCarts = async () => {
+    return await this.dao.findAll();
   };
 
-  static getCartByID = async (cid) => {
-    return await Cart.findById(cid).populate("products.product").lean(true);
+  getCartByID = async (cid) => {
+    return await this.dao.findById(cid);
   };
 
-  static addProductToCart = async ({ cid, pid }) => {
+  addProductToCart = async ({ cid, pid }) => {
     /**
      * @type {import('../../../types/types.js').Cart | null}
      */
-    const foundCart = await Cart.findById(cid).populate("products.product");
+    const foundCart = await this.dao.findById(cid);
     if (!foundCart) {
       throw new AppError(404, {
         message: "A cart with the specified ID does not exist.",
       });
     }
 
-    const foundProduct = await ProductService.getProductById(pid);
+    const foundProduct = await this.productService.getProductById(pid);
     if (!foundProduct) {
       throw new AppError(404, {
         message: "A product with the specified ID does not exist.",
@@ -47,18 +45,7 @@ class CartService {
         throw new AppError(400, { message: "This product is out of stock!" });
       }
 
-      return await Cart.findByIdAndUpdate(
-        cid,
-        {
-          $push: {
-            products: {
-              quantity: 1,
-              product: pid,
-            },
-          },
-        },
-        { new: true }
-      );
+      return await this.dao.addItem(cid, pid);
     } else {
       if (
         "stock" in productInCart.product &&
@@ -70,36 +57,19 @@ class CartService {
         });
       }
 
-      return await Cart.findOneAndUpdate(
-        { _id: cid, "products.product": pid },
-        {
-          $inc: {
-            "products.$.quantity": 1,
-          },
-        },
-        { new: true }
-      );
+      return await this.dao.increaseItemQuantity(cid, pid);
     }
   };
 
-  static removeProductFromCart = async ({ cid, pid }) => {
-    const foundCart = await Cart.findById(cid);
+  removeProductFromCart = async ({ cid, pid }) => {
+    const foundCart = await this.dao.findById(cid);
     if (!foundCart) {
       throw new AppError(404, {
         message: "A cart with the specified ID does not exist.",
       });
     }
 
-    const result = await Cart.updateOne(
-      { _id: cid },
-      {
-        $pull: {
-          products: {
-            product: pid,
-          },
-        },
-      }
-    );
+    const result = this.dao.removeItem(cid, pid);
 
     if (result.modifiedCount > 0) {
       return result;
@@ -110,15 +80,8 @@ class CartService {
     }
   };
 
-  static clearCart = async (cid) => {
-    const result = await Cart.updateOne(
-      { _id: cid },
-      {
-        $set: {
-          products: [],
-        },
-      }
-    );
+  clearCart = async (cid) => {
+    const result = this.dao.clearCart(cid);
 
     if (result.matchedCount === 0) {
       throw new AppError(404, {
@@ -129,15 +92,10 @@ class CartService {
     }
   };
 
-  static updateProductQuantity = async ({ cid, pid }, newQuantity) => {
-    const result = await Cart.findOneAndUpdate(
-      { _id: cid, "products.product": pid },
-      {
-        $set: {
-          "products.$.quantity": newQuantity,
-        },
-      },
-      { new: true }
+  updateProductQuantity = async ({ cid, pid }, newQuantity) => {
+    const result = await this.dao.findOneAndUpdateQuantity(
+      { cid, pid },
+      newQuantity
     );
 
     if (!result) {
@@ -149,8 +107,8 @@ class CartService {
     return result;
   };
 
-  static updateCartProductsArray = async (cid, products) => {
-    const foundCart = await Cart.findById(cid);
+  updateCartProductsArray = async (cid, products) => {
+    const foundCart = await this.dao.findById(cid);
     if (!foundCart) {
       throw new AppError(404, {
         message: "A cart with the specified ID does not exist.",
@@ -158,7 +116,7 @@ class CartService {
     }
 
     for (const p of products) {
-      const foundProduct = await Product.findById(p.product);
+      const foundProduct = await this.productService.getProductById(p.product);
 
       if (!foundProduct) {
         throw new AppError(404, {
@@ -179,16 +137,6 @@ class CartService {
       }
     }
 
-    return await Cart.findOneAndUpdate(
-      { _id: cid },
-      {
-        $set: {
-          products,
-        },
-      },
-      { new: true }
-    );
+    return await this.dao.findOneAndUpdateProducts(cid);
   };
 }
-
-export default CartService;

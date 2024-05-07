@@ -1,10 +1,13 @@
-import { config } from "../../../config/variables.config.js";
-import { AppError } from "../../../helpers/AppError.js";
-import User from "../models/user.model.js";
+import { config } from "../../config/variables.config.js";
+import { AppError } from "../../helpers/AppError.js";
 import bcrypt from "bcrypt";
 
-class UserService {
-  static register = async ({
+export default class UserRepository {
+  constructor(dao) {
+    this.dao = dao;
+  }
+
+  register = async ({
     firstName,
     lastName,
     age,
@@ -16,7 +19,7 @@ class UserService {
     try {
       // registering with GitHub
       if (strategy === "github") {
-        return await User.create({
+        return await this.dao.create({
           email,
           password: null,
           username,
@@ -27,7 +30,7 @@ class UserService {
       const hashedPassword = await bcrypt.hash(pass, salt);
 
       const { password, ...newUser } = (
-        await User.create({
+        await this.dao.create({
           email,
           password: hashedPassword,
           firstName,
@@ -35,7 +38,7 @@ class UserService {
           username: `${firstName} ${lastName}`,
           age: Number(age),
         })
-      ).toObject();
+      )
 
       return newUser;
     } catch (err) {
@@ -46,7 +49,7 @@ class UserService {
     }
   };
 
-  static login = async ({ email, password: pass }) => {
+  login = async ({ email, password: pass }) => {
     if (email === config.ADMIN_EMAIL && pass === config.ADMIN_PASSWORD) {
       return {
         email,
@@ -55,7 +58,7 @@ class UserService {
       };
     }
 
-    const foundUser = await User.findOne({ email });
+    const foundUser = await this.dao.findOne({ email });
     if (!foundUser) {
       throw new AppError(404, { message: "User not found!" });
     }
@@ -65,11 +68,11 @@ class UserService {
       throw new AppError(401, { message: "Credentials don't match!" });
     }
 
-    const { password, ...loggedUser } = foundUser.toObject();
+    const { password, ...loggedUser } = foundUser
     return loggedUser;
   };
 
-  static findGitHubEmail = async (accessToken) => {
+  findGitHubEmail = async (accessToken) => {
     const res = await fetch("https://api.github.com/user/emails", {
       headers: {
         Authorization: `token ${accessToken}`,
@@ -84,5 +87,3 @@ class UserService {
     return sortedEmails[0].email;
   };
 }
-
-export default UserService;

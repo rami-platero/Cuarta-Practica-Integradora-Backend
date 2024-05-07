@@ -1,8 +1,11 @@
-import Product from "../models/product.model.js";
+export default class ProductRepository {
 
-class ProductService {
-  static createProduct = async (body) => {
-    return await Product.create({
+  constructor(dao) {
+    this.dao = dao;
+  }
+
+  createProduct = async (body) => {
+    return await this.dao.create({
       title: body.title,
       category: body.category,
       code: body.code,
@@ -14,36 +17,31 @@ class ProductService {
     });
   };
 
-  static updateProduct = async (upFields, id) => {
-    return await Product.findByIdAndUpdate(id, { ...upFields }, { new: true });
+  updateProduct = async (upFields, id) => {
+    return await this.dao.findByIdAndUpdate(id, upFields);
   };
 
-  static deleteProduct = async (id) => {
-    return await Product.deleteOne({ _id: id });
+  deleteProduct = async (id) => {
+    return await this.dao.deleteOneById(id);
   };
 
-  static getAllProducts = async () => {
-    return await Product.find();
+  getAllProducts = async () => {
+    return await this.dao.findAll();
   };
 
-  static getProductById = async (id) => {
-    return await Product.findById(id);
+  getProductById = async (id) => {
+    return await this.dao.findById(id);
   };
 
-  static getProducts = async ({ limit, page = 1, query, sort }) => {
+  getProducts = async ({ limit, page = 1, query, sort }) => {
     // @ts-ignore
-    return await Product.paginate(
+    return await this.dao.getPaginated(
       { title: { $regex: query, $options: "i" } },
       {
-        limit: Number(limit),
-        page: Number(page),
-        sort: {
-          price: sort,
-        },
-        lean: true,
+        limit,
+        page,
+        sort
       }
     );
   };
 }
-
-export default ProductService;
