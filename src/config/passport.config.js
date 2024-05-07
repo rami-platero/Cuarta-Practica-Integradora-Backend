@@ -1,9 +1,9 @@
 import passport from "passport";
 import GitHubStrategy from "passport-github2";
-import User from "../dao/database/models/user.model.js";
-import { config } from "../config.js";
-import UserService from "../dao/database/services/user.service.js";
+import User from '../services/dao/mongo/models/user.model.js'
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
+import { config } from "./variables.config.js";
+import { userService } from "../services/service.js";
 
 const cookieExtractor = req => {
   let token = null;
@@ -26,20 +26,20 @@ const initializePassport = () => {
       },
       async (accessToken, _refreshToken, profile, done) => {
         try {
-          const email = await UserService.findGitHubEmail(accessToken);
+          const email = await userService.findGitHubEmail(accessToken);
 
           const foundUser = await User.findOne({
             email,
           });
           if (!foundUser) {
-            const newUser = await UserService.register({
+            const newUser = await userService.register({
               email,
               username: profile._json.name,
               strategy: "github",
             });
-            return done(null, newUser.toObject());
+            return done(null, newUser);
           }
-          return done(null, foundUser.toObject());
+          return done(null, foundUser);
         } catch (error) {
           return done(error);
         }
