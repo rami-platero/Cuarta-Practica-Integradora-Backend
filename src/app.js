@@ -10,7 +10,6 @@ import authRoute from "./routes/auth.route.js";
 import __dirname from "./utils.js";
 import { swaggerDocs } from "./utils/swagger.js";
 import handlebars from "express-handlebars";
-import { connectDB } from "./dao/database/db.js";
 import hbsHelpers from "./helpers/handlebars.helpers.js";
 import cookieParser from "cookie-parser";
 import passport from "passport";
@@ -60,7 +59,6 @@ const httpServer = app.listen(app.get("PORT"), () => {
   console.log("Server running on port", app.get("PORT"));
   swaggerDocs(app, app.get("PORT"));
 });
-connectDB();
 const io = new Server(httpServer);
 app.set("io", io);
 
