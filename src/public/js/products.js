@@ -39,8 +39,8 @@ const handleErrors = (error) => {
       });
     }
 
-    if ("message" in error.response.data) {
-      return notifyError(error.response.data.message);
+    if ("cause" in error.response.data) {
+      return notifyError(error.response.data.cause);
     }
   }
   return notifyError("Internal server error.");

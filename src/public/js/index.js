@@ -99,8 +99,8 @@ const addProduct = async () => {
     } else {
       return notifyError(error.response.data.message);
     }
-    if ("message" in error) {
-      return notifyError(error.message);
+    if ("cause" in error) {
+      return notifyError(error.cause);
     }
   }
 };
