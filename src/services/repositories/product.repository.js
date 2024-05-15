@@ -1,3 +1,5 @@
+import { generateProduct } from "../../utils/faker.js";
+
 export default class ProductRepository {
 
   constructor(dao) {
@@ -48,4 +50,13 @@ export default class ProductRepository {
       }
     );
   };
+
+  getMockingProducts = async (amount = 100) => {
+    const mockingproducts = []
+    for (let i = 0; i < amount; i++) {
+      const generatedProduct = generateProduct()
+      mockingproducts.push(generatedProduct)
+    }
+    return mockingproducts
+  }
 }

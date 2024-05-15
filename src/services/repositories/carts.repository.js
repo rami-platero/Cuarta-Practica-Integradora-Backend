@@ -1,4 +1,5 @@
 import { AppError } from "../../helpers/AppError.js";
+import { EErrors } from "../errors/enums.js";
 
 export default class CartsRepository {
   constructor(dao, productService, ticketService) {
@@ -20,20 +21,23 @@ export default class CartsRepository {
   };
 
   addProductToCart = async ({ cid, pid }) => {
-    /**
-     * @type {import('../../../types/types.js').Cart | null}
-     */
     const foundCart = await this.dao.findById(cid);
     if (!foundCart) {
-      throw new AppError(404, {
-        message: "A cart with the specified ID does not exist.",
+      throw new AppError({
+        name: "Product addition error.",
+        message: "Error while trying to add product to cart.",
+        code: EErrors.NOT_FOUND,
+        cause: "A cart with the specified ID does not exist.",
       });
     }
 
     const foundProduct = await this.productService.getProductById(pid);
     if (!foundProduct) {
-      throw new AppError(404, {
-        message: "A product with the specified ID does not exist.",
+      throw new AppError({
+        name: "Product addition error.",
+        message: "Error while trying to add product to cart.",
+        code: EErrors.NOT_FOUND,
+        cause: "A product with the specified ID does not exist.",
       });
     }
 
@@ -43,7 +47,12 @@ export default class CartsRepository {
 
     if (!productInCart) {
       if (foundProduct.stock === 0) {
-        throw new AppError(400, { message: "This product is out of stock!" });
+        throw new AppError({
+          name: "Product addition error.",
+          message: "Error while trying to add product to cart.",
+          code: EErrors.STOCK_ERROR,
+          cause: "This product is out of stock!",
+        });
       }
 
       return await this.dao.addItem(cid, pid);
@@ -52,12 +61,13 @@ export default class CartsRepository {
         "stock" in productInCart.product &&
         productInCart.product.stock < productInCart.quantity + 1
       ) {
-        throw new AppError(400, {
-          message:
-            "The quantity you're trying to add exceeds the available stock for this product.",
+        throw new AppError({
+          name: "Product addition error.",
+          message: "Error while trying to add product to cart.",
+          code: EErrors.STOCK_ERROR,
+          cause: "The quantity you're trying to add exceeds the available stock for this product.",
         });
       }
-      console.log("increase");
       return await this.dao.increaseItemQuantity(cid, pid);
     }
   };
@@ -65,8 +75,11 @@ export default class CartsRepository {
   removeProductFromCart = async ({ cid, pid }) => {
     const foundCart = await this.dao.findById(cid);
     if (!foundCart) {
-      throw new AppError(404, {
-        message: "A cart with the specified ID does not exist.",
+      throw new AppError({
+        name: "Cart product removal error.",
+        message: "Error while trying to remove product from cart.",
+        code: EErrors.NOT_FOUND,
+        cause: "A cart with the specified ID does not exist.",
       });
     }
 
@@ -75,8 +88,11 @@ export default class CartsRepository {
     if (result.modifiedCount > 0) {
       return result;
     } else {
-      throw new AppError(404, {
-        message: "A product with the specified ID does not exist in the cart.",
+      throw new AppError({
+        name: "Cart product removal error.",
+        message: "Error while trying to remove product from cart.",
+        code: EErrors.NOT_FOUND,
+        cause: "A product with the specified ID does not exist.",
       });
     }
   };
@@ -85,8 +101,11 @@ export default class CartsRepository {
     const result = this.dao.clearCart(cid);
 
     if (result.matchedCount === 0) {
-      throw new AppError(404, {
-        message: "A cart with the specified ID does not exist.",
+      throw new AppError({
+        name: "Clear cart error.",
+        message: "Error while trying to clear cart.",
+        code: EErrors.NOT_FOUND,
+        cause: "A cart with the specified ID does not exist.",
       });
     } else {
       return result;
@@ -100,8 +119,11 @@ export default class CartsRepository {
     );
 
     if (!result) {
-      throw new AppError(404, {
-        message: "Cart or Product in the cart does not exist.",
+      throw new AppError({
+        name: "Product quantity update error.",
+        message: "Error while trying to update cart product quantity.",
+        code: EErrors.NOT_FOUND,
+        cause: "A Cart or Product with the specified ID does not exist.",
       });
     }
 
@@ -111,8 +133,11 @@ export default class CartsRepository {
   updateCartProductsArray = async (cid, products) => {
     const foundCart = await this.dao.findById(cid);
     if (!foundCart) {
-      throw new AppError(404, {
-        message: "A cart with the specified ID does not exist.",
+      throw new AppError({
+        name: "Cart update error.",
+        message: "Error while trying to update cart.",
+        code: EErrors.NOT_FOUND,
+        cause: "A cart with the specified ID does not exist.",
       });
     }
 
@@ -120,20 +145,29 @@ export default class CartsRepository {
       const foundProduct = await this.productService.getProductById(p.product);
 
       if (!foundProduct) {
-        throw new AppError(404, {
-          message: `Can't add product with ID: ${p.product} because it doesn't exist.`,
+        throw new AppError({
+          name: "Cart update error.",
+          message: "Error while trying to update cart.",
+          code: EErrors.NOT_FOUND,
+          cause: `A product with the ID: ${p.product} does not exist.`,
         });
       }
 
       if (foundProduct.stock === 0) {
-        throw new AppError(400, {
-          message: `Product with ID: ${foundProduct._id} can't be added to the cart because it's out of stock!`,
+        throw new AppError({
+          name: "Cart update error.",
+          message: "Error while trying to update cart.",
+          code: EErrors.STOCK_ERROR,
+          cause: `Product with ID: ${foundProduct._id} can't be added to the cart because it's out of stock!`,
         });
       }
 
       if (foundProduct.stock < p.quantity) {
-        throw new AppError(400, {
-          message: `Product with ID: ${foundProduct._id} can't be added to the cart because there are only ${foundProduct.stock} units available, and you are trying to add ${p.quantity} units`,
+        throw new AppError({
+          name: "Cart update error.",
+          message: "Error while trying to update cart.",
+          code: EErrors.STOCK_ERROR,
+          cause: `Product with ID: ${foundProduct._id} can't be added to the cart because there are only ${foundProduct.stock} units available, and you are trying to add ${p.quantity} units`,
         });
       }
     }
@@ -144,8 +178,11 @@ export default class CartsRepository {
   purchaseItems = async (cid, purchaserEmail) => {
     const foundCart = await this.dao.findById(cid);
     if (!foundCart) {
-      throw new AppError(404, {
-        message: "A cart with the specified ID does not exist.",
+      throw new AppError({
+        name: "Checkout error.",
+        message: "Error while trying to purchase items.",
+        code: EErrors.NOT_FOUND,
+        cause: `A cart with the specified ID does not exist.`,
       });
     }
 
@@ -172,15 +209,13 @@ export default class CartsRepository {
     }
 
     if (outOfStockItemsIds.length === foundCart.products.length) {
-      throw new AppError(
-        400,
-        JSON.stringify({
-          message: "All of the items in your cart are out of stock.",
-          items: outOfStockItemsIds,
-        })
-      );
+      throw new AppError({
+        name: "Checkout error.",
+        message: "Error while trying to purchase items.",
+        code: EErrors.NOT_FOUND,
+        cause: `All of the items in your cart are out of stock.`,
+      });
     }
-
     return await this.ticketService.create(total, purchaserEmail);
   };
 }

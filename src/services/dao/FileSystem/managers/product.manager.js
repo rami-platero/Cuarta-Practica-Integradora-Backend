@@ -39,7 +39,12 @@ class ProductManager {
     const products = await this.readProducts();
     const foundProduct = products.find((p) => p.code === product.code);
     if (foundProduct) {
-      throw new AppError(409, { message: "Code provided is already in use." });
+      throw new AppError({
+        name: "Duplicated error.",
+        message: "Error while trying to add a product.",
+        code: EErrors.DUPLICATED,
+        cause: "The code provided is already in use.",
+      })
     }
     const newProduct = { ...product, id: this.id++ }
 

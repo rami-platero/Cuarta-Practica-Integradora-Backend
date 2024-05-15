@@ -1,5 +1,6 @@
 import { AppError } from "../helpers/AppError.js";
-import { cartsService } from '../services/service.js';
+import { EErrors } from "../services/errors/enums.js";
+import { cartsService } from "../services/service.js";
 
 export const createCart = async (_req, res, next) => {
   try {
@@ -23,22 +24,27 @@ export const getAllCarts = async (_req, res, next) => {
   }
 };
 
-export const getCartByID = async (req,res,next) => {
+export const getCartByID = async (req, res, next) => {
   try {
-    const {cid} = req.params
+    const { cid } = req.params;
 
-    const foundCart = await cartsService.getCartByID(cid)
+    const foundCart = await cartsService.getCartByID(cid);
 
-    if(!foundCart){
-      throw new AppError(404, {message: "A cart with the specified ID does not exist."})
+    if (!foundCart) {
+      throw new AppError({
+        name: "Cart retrieval error.",
+        message: "Error trying to find Cart.",
+        code: EErrors.NOT_FOUND,
+        cause: "A cart with the specified ID does not exist.",
+      });
     }
 
-    return res.status(200).json({status: "success", payload: foundCart})
+    return res.status(200).json({ status: "success", payload: foundCart });
   } catch (error) {
     console.log(error);
-    return next(error)
+    return next(error);
   }
-}
+};
 
 export const addProductToCart = async (req, res, next) => {
   try {
@@ -79,38 +85,46 @@ export const clearCart = async (req, res, next) => {
 
 export const updateProductQuantity = async (req, res, next) => {
   try {
-    const params = req.params
-    const {quantity} = req.body
+    const params = req.params;
+    const { quantity } = req.body;
 
-    const result = await cartsService.updateProductQuantity(params,quantity)
+    const result = await cartsService.updateProductQuantity(params, quantity);
 
-    return res.status(201).json({status: "success", message: "Updated product quantity successfully!", payload: result})
-
+    return res
+      .status(201)
+      .json({
+        status: "success",
+        message: "Updated product quantity successfully!",
+        payload: result,
+      });
   } catch (error) {
-    return next(error)
+    return next(error);
   }
-}
+};
 
-export const updateCartProductsArray = async (req,res,next) => {
+export const updateCartProductsArray = async (req, res, next) => {
   try {
-    const {cid} = req.params
+    const { cid } = req.params;
 
-    const updatedCart = await cartsService.updateCartProductsArray(cid, req.body)
+    const updatedCart = await cartsService.updateCartProductsArray(
+      cid,
+      req.body
+    );
 
-    return res.status(201).json({status: "success", payload: updatedCart})
+    return res.status(201).json({ status: "success", payload: updatedCart });
   } catch (error) {
-    return next(error)
+    return next(error);
   }
-}
+};
 
-export const purchaseItems = async (req,res,next) => {
+export const purchaseItems = async (req, res, next) => {
   try {
-    const {cid} = req.params
-    const {purchaserEmail} = req.body
+    const { cid } = req.params;
+    const { purchaserEmail } = req.body;
 
-    const ticket = await cartsService.purchaseItems(cid, purchaserEmail)
-    return res.status(201).json(ticket)
+    const ticket = await cartsService.purchaseItems(cid, purchaserEmail);
+    return res.status(201).json(ticket);
   } catch (error) {
-    return next(error)
+    return next(error);
   }
-}
+};

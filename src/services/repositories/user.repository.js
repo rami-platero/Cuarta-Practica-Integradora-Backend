@@ -1,6 +1,7 @@
 import { config } from "../../config/variables.config.js";
 import { AppError } from "../../helpers/AppError.js";
 import bcrypt from "bcrypt";
+import { EErrors } from "../errors/enums.js";
 
 export default class UserRepository {
   constructor(dao) {
@@ -43,7 +44,12 @@ export default class UserRepository {
       return newUser;
     } catch (err) {
       if (err.code === 11000 && "email" in err.keyPattern) {
-        throw new AppError(400, { message: "Email is already in use!" });
+        throw new AppError({
+          name: "Registration error.",
+          message: "Error while trying to register.",
+          code: EErrors.DUPLICATED,
+          cause: `Email is already in use!`,
+        });
       }
       throw new Error(err);
     }
@@ -60,12 +66,22 @@ export default class UserRepository {
 
     const foundUser = await this.dao.findOne({ email });
     if (!foundUser) {
-      throw new AppError(404, { message: "User not found!" });
+      throw new AppError({
+        name: "Login error.",
+        message: "Error while trying to login.",
+        code: EErrors.NOT_FOUND,
+        cause: `User not found!`,
+      });
     }
 
     const matches = bcrypt.compare(foundUser.password, pass);
     if (!matches) {
-      throw new AppError(401, { message: "Credentials don't match!" });
+      throw new AppError({
+        name: "Login error.",
+        message: "Error while trying to login.",
+        code: EErrors.INVALID_CREDENTIALS,
+        cause: `Credentials don't match!`,
+      });
     }
 
     const { password, ...loggedUser } = foundUser
@@ -80,7 +96,12 @@ export default class UserRepository {
     });
     const emails = await res.json();
     if (!emails || emails.length === 0) {
-      throw new AppError(500, { message: "Internal server error." });
+      throw new AppError({
+        name: "Github Auth error.",
+        message: "Error while trying to login/register.",
+        code: EErrors.EXTERNAL,
+        cause: `Couldn't find any emails from the github emails request.`,
+      });
     }
     // Sort by primary email - the user may have several emails, but only one of them will be primary
     const sortedEmails = emails.sort((a, b) => b.primary - a.primary);
