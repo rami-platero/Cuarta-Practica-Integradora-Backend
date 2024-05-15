@@ -23,9 +23,11 @@ export const getProducts = async (req, res, next) => {
       query,
     });
 
-    const {docs, ...result} = products
+    const { docs, ...result } = products;
 
-    return res.status(200).json({ status: "success", payload: docs, ...result});
+    return res
+      .status(200)
+      .json({ status: "success", payload: docs, ...result });
   } catch (error) {
     return next(error);
   }
@@ -36,7 +38,12 @@ export const getProductById = async (req, res, next) => {
     const foundProduct = await productService.getProductById(req.params.pid);
 
     if (!foundProduct) {
-      throw new AppError(404, { message: "Product not found" });
+      throw new AppError({
+        name: "Product retrieval error.",
+        message: "Error trying to find Product.",
+        code: EErrors.NOT_FOUND,
+        cause: "A product with the specified ID does not exist.",
+      });
     }
 
     return res.status(200).json({ product: foundProduct });
@@ -84,6 +91,17 @@ export const deleteProduct = async (req, res, next) => {
     await productService.deleteProduct(req.params.pid);
     io.emit("delete_product", req.params.pid);
     return res.sendStatus(204);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const getMockingProducts = async (req, res, next) => {
+  try {
+    const mockingProducts = await productService.getMockingProducts();
+    return res
+      .status(200)
+      .json({ status: "success", payload: mockingProducts });
   } catch (error) {
     return next(error);
   }
