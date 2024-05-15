@@ -1,6 +1,8 @@
 export class AppError extends Error{
-    constructor(statusCode,message){
-        super(JSON.stringify(message));
-        this.statusCode = statusCode
+    constructor({name, code, cause, message}){
+        super(message);
+        this.name = name
+        this.code = code
+        this.cause = cause
     }
 }
