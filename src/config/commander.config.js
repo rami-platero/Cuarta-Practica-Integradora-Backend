@@ -4,7 +4,7 @@ const program = new Command();
 
 program
   .option("--persist <persist>", "persistence mode", "mongodb")
-  .option("--mode <mode>", "Modo de trabajo", "development")
+  .option("--mode <mode>", "environment mode", "development")
   .parse();
 
 export default program;
