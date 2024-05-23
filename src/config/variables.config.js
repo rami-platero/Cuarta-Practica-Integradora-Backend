@@ -11,5 +11,6 @@ export const config = {
   SESSION_SECRET_CODE: process.env.SESSION_SECRET_CODE,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
-  persistence: program.opts().persist
+  persistence: program.opts().persist,
+  environment: program.opts().mode
 };
