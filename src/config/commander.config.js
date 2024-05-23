@@ -1,7 +1,10 @@
-import {Command} from 'commander'
+import { Command } from "commander";
 
-const program = new Command()
+const program = new Command();
 
-program.option('--persist <persist>', 'persistence mode', 'mongodb').parse()
+program
+  .option("--persist <persist>", "persistence mode", "mongodb")
+  .option("--mode <mode>", "Modo de trabajo", "development")
+  .parse();
 
-export default program
+export default program;
