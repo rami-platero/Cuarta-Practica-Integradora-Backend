@@ -7,6 +7,7 @@ import messagesRoute from "./routes/messages.route.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import viewsRoute from "./routes/views.route.js";
 import authRoute from "./routes/auth.route.js";
+import loggerRouter from "./routes/logger.route.js";
 import __dirname from "./utils.js";
 import { swaggerDocs } from "./utils/swagger.js";
 import handlebars from "express-handlebars";
@@ -16,6 +17,8 @@ import passport from "passport";
 import initializePassport from "./config/passport.config.js";
 import session from "express-session";
 import { config } from "./config/variables.config.js";
+import { addHttpLogger } from "./middlewares/logger.middleware.js";
+import { setupLogger } from "./config/logger.config.js";
 
 const app = express();
 
@@ -34,7 +37,9 @@ app.use(
   })
 );
 app.use(passport.initialize());
-app.use(morgan("dev"));
+//app.use(morgan("dev"));
+app.use(setupLogger)
+app.use(addHttpLogger)
 
 const hbs = handlebars.create({
   helpers: hbsHelpers,
@@ -52,6 +57,7 @@ app.use("/api/products", productsRoute);
 app.use("/api/carts", cartsRoute);
 app.use("/api/messages", messagesRoute);
 app.use("/api/auth", authRoute);
+app.use("/api", loggerRouter)
 
 app.use(errorHandler);
 
