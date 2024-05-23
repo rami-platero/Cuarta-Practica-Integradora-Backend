@@ -11,7 +11,14 @@ const errorStatusCodes = {
   [EErrors.INVALID_CREDENTIALS]: 401,
 };
 
-export const errorHandler = (error, _req, res, _next) => {
+export const errorHandler = (error, req, res, _next) => {
+  
+  req.logger.error(
+    `${req.method} at ${
+      req.url
+    } - on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`
+  );
+
   if (error instanceof AppError) {
     const statusCode = errorStatusCodes[error.code] || 500;
     if (statusCode === 500) {
