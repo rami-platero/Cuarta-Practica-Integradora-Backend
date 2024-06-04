@@ -39,6 +39,7 @@ const product = z.object({
       })
     )
     .optional(),
+  owner: z.string().email().optional().default("admin")
 });
 
 export const createBodyProductSchema = product.extend({
