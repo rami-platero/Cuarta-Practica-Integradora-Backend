@@ -88,7 +88,9 @@ export const deleteProduct = async (req, res, next) => {
   try {
     const io = app.get("io");
 
-    await productService.deleteProduct(req.params.pid);
+    const {email} = req.user
+
+    await productService.deleteProduct(req.params.pid, email);
     io.emit("delete_product", req.params.pid);
     return res.sendStatus(204);
   } catch (error) {
