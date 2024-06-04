@@ -7,4 +7,7 @@ export default class UserMongo {
     findOne = async (data) => {
         return await User.findOne(data, {}, {lean: true})
     }
+    updateOne = async (data, upFields) => {
+        return await User.updateOne(data, {$set: {...upFields}})
+    }
 }
