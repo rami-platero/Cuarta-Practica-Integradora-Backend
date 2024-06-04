@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { Login, Logout, Register, getCurrentUser, loginWithGitHub } from "../controllers/user.controller.js";
+import { Login, Logout, Register, forgotPassword, getCurrentUser, loginWithGitHub, resetPassword } from "../controllers/user.controller.js";
 import passport from "passport";
-import { validateRegisterUser } from "../middlewares/validate.js";
+import { validateRegisterUser, validateResetPassword } from "../middlewares/validate.js";
 import { passportCall } from "../middlewares/passport.js";
 
 const router = Router();
@@ -22,5 +22,8 @@ router.get(
 );
 
 router.get("/current", passportCall("jwt"), getCurrentUser)
+
+router.post("/forgot-password", forgotPassword)
+router.post("/reset-password/:token", validateResetPassword, resetPassword)
 
 export default router;
