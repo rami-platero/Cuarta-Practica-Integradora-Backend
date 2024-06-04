@@ -4,7 +4,13 @@ import {
   validateGetProducts,
 } from "../middlewares/validate.js";
 import { passportCall } from "../middlewares/passport.js";
-import { cartsService, messageService, productService } from "../services/service.js";
+import {
+  cartsService,
+  messageService,
+  productService,
+} from "../services/service.js";
+import jwt from "jsonwebtoken";
+import { config } from "../config/variables.config.js";
 
 const router = Router();
 
@@ -18,7 +24,7 @@ router.get("/", async (_req, res) => {
 router.get("/realTimeProducts", async (_req, res) => {
   const products = await productService.getAllProducts();
   return res.render("realTimeProducts", {
-    products
+    products,
   });
 });
 
@@ -29,21 +35,30 @@ router.get("/chat", async (_req, res) => {
   });
 });
 
-router.get("/products", validateGetProducts, passportCall('jwt'), async (req, res) => {
-  const { limit, page, query, sort } = req.query;
-  // @ts-ignore
-  const queryString = req._parsedOriginalUrl.query;
+router.get(
+  "/products",
+  validateGetProducts,
+  passportCall("jwt"),
+  async (req, res) => {
+    const { limit, page, query, sort } = req.query;
+    // @ts-ignore
+    const queryString = req._parsedOriginalUrl.query;
 
-  const result = await productService.getProducts({ limit, page, query, sort });
-  console.log(req.user);
-  return res.render("products", {
-    products: result.docs,
-    totalPages: result.totalPages,
-    page: result.page,
-    queries: queryString,
-    user: req.user
-  });
-});
+    const result = await productService.getProducts({
+      limit,
+      page,
+      query,
+      sort,
+    });
+    return res.render("products", {
+      products: result.docs,
+      totalPages: result.totalPages,
+      page: result.page,
+      queries: queryString,
+      user: req.user,
+    });
+  }
+);
 
 router.get("/carts/:cid", validateGetCartById, async (req, res) => {
   const { cid } = req.params;
@@ -54,18 +69,54 @@ router.get("/carts/:cid", validateGetCartById, async (req, res) => {
   });
 });
 
-router.get("/login", passportCall('jwt'), async (req,res) => {
-  if(req.user){
-    return res.redirect("/products")
+router.get("/login", passportCall("jwt"), async (req, res) => {
+  if (req.user) {
+    return res.redirect("/products");
   }
-  return res.render("login")
-})
+  return res.render("login");
+});
 
-router.get("/register", passportCall('jwt'), async (req,res) => {
-  if(req.user){
-    return res.redirect("/products")
+router.get("/register", passportCall("jwt"), async (req, res) => {
+  if (req.user) {
+    return res.redirect("/products");
   }
-  return res.render("register")
-})
+  return res.render("register");
+});
+
+router.get("/forgot-password", passportCall("jwt"), (req, res) => {
+  if (req.user) {
+    return res.redirect("/products");
+  }
+  return res.render("forgot-password");
+});
+
+router.get("/reset-password", (req, res) => {
+  try {
+    const token = req.query.token;
+
+    let errorType = null;
+
+    const decoded = jwt.verify(token, config.JWT_SECRET_KEY, (err,decoded) => {
+      if (err) {
+        switch (err.name) {
+          case "JsonWebTokenError":
+            errorType = "INVALID";
+            break;
+          case "TokenExpiredError":
+            errorType = "EXPIRED";
+            break;
+          default:
+            errorType = "ERROR";
+            break;
+        }
+      } 
+      return decoded
+    });
+
+    return res.render("reset-password", { decoded, errorType, token });
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 export default router;
