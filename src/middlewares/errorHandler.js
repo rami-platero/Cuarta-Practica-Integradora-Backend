@@ -9,6 +9,8 @@ const errorStatusCodes = {
   [EErrors.DUPLICATED]: 409,
   [EErrors.EXTERNAL]: 500,
   [EErrors.INVALID_CREDENTIALS]: 401,
+  [EErrors.TOKEN_ERROR]: 401,
+  [EErrors.CREDENTIALS_ERROR]: 400
 };
 
 export const errorHandler = (error, req, res, _next) => {
