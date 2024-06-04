@@ -20,7 +20,7 @@ export default class CartsRepository {
     return await this.dao.findById(cid);
   };
 
-  addProductToCart = async ({ cid, pid }) => {
+  addProductToCart = async ({ cid, pid, userEmail }) => {
     const foundCart = await this.dao.findById(cid);
     if (!foundCart) {
       throw new AppError({
@@ -38,6 +38,15 @@ export default class CartsRepository {
         message: "Error while trying to add product to cart.",
         code: EErrors.NOT_FOUND,
         cause: "A product with the specified ID does not exist.",
+      });
+    }
+
+    if(userEmail === foundProduct.owner){
+      throw new AppError({
+        name: "Product addition error.",
+        message: "Error while trying to add product to cart.",
+        code: EErrors.UNAUTHORIZED,
+        cause: "You can't add your own products to the cart!",
       });
     }
 
