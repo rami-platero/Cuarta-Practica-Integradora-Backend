@@ -12,5 +12,12 @@ export const config = {
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
   persistence: program.opts().persist,
-  environment: program.opts().mode
+  environment: program.opts().mode,
+  mailing: {
+    user: process.env.MAILING_USER,
+    service: process.env.MAILING_SERVICE,
+    password: process.env.MAILING_PASSWORD
+  },
+  port: process.env.PORT || 8080,
+  BASE_URL: process.env.BASE_URL
 };
