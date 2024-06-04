@@ -1,9 +1,11 @@
 import { AppError } from "../helpers/AppError.js";
 import { EErrors } from "../services/errors/enums.js";
 
-export const isAuthorized = (role) => (req, _res, next) => {
+export const isAuthorized = (roles) => (req, _res, next) => {
   try {
-    if (!req.user || req.user.role !== role)
+    if (!req.user || roles.some((role)=>{
+      return role === req.user.role
+    }))
       throw new AppError({
         name: "Authorization error.",
         message: "You do not have permission to access this resource.",
