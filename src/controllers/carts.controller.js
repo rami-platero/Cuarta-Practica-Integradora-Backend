@@ -49,7 +49,8 @@ export const getCartByID = async (req, res, next) => {
 export const addProductToCart = async (req, res, next) => {
   try {
     const { cid, pid } = req.params;
-    const updatedCart = await cartsService.addProductToCart({ cid, pid });
+    const {email} = req.user
+    const updatedCart = await cartsService.addProductToCart({ cid, pid, userEmail: email });
 
     return res.status(201).json({
       message: "Product added to cart successfully!",
