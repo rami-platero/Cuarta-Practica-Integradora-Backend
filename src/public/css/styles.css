@@ -268,3 +268,67 @@ main {
     color: black;
   }
 }
+
+.passwordPage {
+  display: flex;
+  flex-direction: columnc;
+  align-items: center;
+  justify-content: center;
+  max-width: 450px;
+  margin: 0 auto;
+  gap: 0rem;
+  height: 100dvh;
+
+  p {
+    text-align: center;
+  }
+
+  .errorLink {
+    background-color: rgb(226, 161, 161);
+    padding: .5rem;
+    border-radius: 5px;
+    font-size: .9rem;
+    color: rgb(143, 0, 0);
+    font-weight: 500;
+    a {
+      text-decoration: underline;
+      color: rgb(209, 0, 0);
+    }
+  }
+}
+
+.passwordForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+
+    input {
+      padding: 0.5rem 1rem;
+      outline: none;
+      background-color: rgb(56, 56, 56);
+      border: none;
+      color: white;
+    }
+  }
+
+  button[type="submit"] {
+    background-color: rgb(6, 153, 6);
+    color: white;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    border-radius: 5px;
+  }
+}
