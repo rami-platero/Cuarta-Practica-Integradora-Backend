@@ -33,6 +33,10 @@ const schema = new Schema({
     default: true,
   },
   thumbnails: [{ type: String }],
+  owner: {
+    type: String,
+    default: "admin"
+  }
 });
 
 schema.plugin(mongoosePaginate);
