@@ -6,4 +6,6 @@ export const EErrors = {
   DUPLICATED: 4,
   EXTERNAL: 5,
   INVALID_CREDENTIALS: 6,
+  TOKEN_ERROR: 7,
+  CREDENTIALS_ERROR: 8
 };
