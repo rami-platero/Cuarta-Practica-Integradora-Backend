@@ -5,8 +5,7 @@ export default class CartsMongo {
     return await Cart.create({products: []})
   };
   findAll = async () => {
-    const carts = await Cart.find().lean(true);
-    return carts.map((c) => c.toObject());
+    return await Cart.find().lean(true);
   };
   findById = async (id) => {
     return await Cart.findById(id, {}, { lean: true }).populate(
