@@ -9,7 +9,7 @@ import viewsRoute from "./routes/views.route.js";
 import authRoute from "./routes/auth.route.js";
 import loggerRouter from "./routes/logger.route.js";
 import __dirname from "./utils.js";
-import { swaggerDocs } from "./utils/swagger.js";
+import { swaggerDocs } from "./config/swagger.config.js";
 import handlebars from "express-handlebars";
 import hbsHelpers from "./helpers/handlebars.helpers.js";
 import cookieParser from "cookie-parser";
@@ -38,8 +38,8 @@ app.use(
 );
 app.use(passport.initialize());
 //app.use(morgan("dev"));
-app.use(setupLogger)
-app.use(addHttpLogger)
+app.use(setupLogger);
+app.use(addHttpLogger);
 
 const hbs = handlebars.create({
   helpers: hbsHelpers,
@@ -57,7 +57,7 @@ app.use("/api/products", productsRoute);
 app.use("/api/carts", cartsRoute);
 app.use("/api/messages", messagesRoute);
 app.use("/api/auth", authRoute);
-app.use("/api", loggerRouter)
+app.use("/api", loggerRouter);
 
 app.use(errorHandler);
 
