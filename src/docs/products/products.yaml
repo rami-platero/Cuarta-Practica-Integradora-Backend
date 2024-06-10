@@ -1,0 +1,326 @@
+paths:
+  /api/products:
+    get:
+      summary: Get all products with optional pagination, sorting and search
+      tags:
+        - Products
+      parameters:
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SortParam'
+        - $ref: '#/components/parameters/QueryParam'
+      responses:
+        "200":
+          description: A list of products retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#components/responseBodies/getProducts"
+        "500":
+          description: Internal server error.
+    post:
+      summary: Create a new product
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/createProduct"
+        responses:
+        "201":
+          description: Created a new product successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  payload:
+                    $ref: "#components/schemas/ProductResponse"
+        "500":
+          description: Internal server error.
+  /api/products/{pid}:
+    parameters:
+      - in: path
+        name: pid
+        required: true
+        description: Product id
+        schema:
+          type: string
+    get:
+      summary: Get a single product
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Retrieved product successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    $ref: "#components/schemas/ProductResponse"
+        "500":
+          description: Internal server error.
+    put:
+      summary: Update a product
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/ProductBody"
+    delete:
+      summary: Delete a product
+      tags:
+        - Products
+      responses:
+        "204":
+          description: Deleted a product successfully
+        "500":
+          description: Internal server error.
+  /api/products/mockingproducts:
+    get:
+      summary: Generate and retrieve mock product data
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Retrieved product successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: array
+                    items:
+                      $ref: "#components/schemas/ProductResponse"
+        "500":
+          description: Internal server error.
+
+components:
+  schemas:
+    ProductBody:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the product
+          example: "Product Title"
+          required: true
+        description:
+          type: string
+          description: Description of the product
+          example: "Product Description"
+          required: true
+        code:
+          type: string
+          description: Code of the product
+          example: "ABC123"
+          required: true
+        stock:
+          type: number
+          description: Stock of the product
+          example: 10
+          required: true
+        price:
+          type: number
+          description: Price of the product
+          example: 99.99
+          required: true
+        category:
+          type: string
+          description: Category of the product
+          example: "Electronics"
+          required: true
+        status:
+          type: boolean
+          description: Status of the product (optional)
+          default: true
+          example: true
+        thumbnails:
+          type: array
+          items:
+            type: string
+          description: Array of thumbnail URLs (optional)
+          example: ["https://example.com/image1.jpg", "https://example.com/image2.jpg"]
+          required: false
+    ProductResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Auto-generated product MongoDB id
+          example: "507f1f77bcf86cd799439011"
+        title:
+          type: string
+          description: The title of the product
+          example: 'ASUS ROG STRIX B760-F GAMING WIFI'
+        description:
+          type: string
+          description: Detailed description of the product
+          example: 'Leap into the future with the ROG Strix B760-F, a fantastic upgrade into 13th Gen with its dominant power solution and best-in-class DDR5 speeds. Its next-gen PCIe 5.0 slot gives overwhelming graphics card throughput for maximum FPS, and you can minimize lag via hyperfast WiFi 6E or 2.5G LAN. All these perks come alongside distinctive rainbow stripes and retro accents so you can show off your gamer pride.'
+        code:
+          type: string
+          description: Unique code for the product
+          example: 'abc123456'
+        stock:
+          type: integer
+          description: Number of items in stock
+          example: 0
+        price:
+          type: number
+          description: Price of the product
+          example: 200
+        category:
+          type: string
+          description: Category of the product
+          example: 'motherboard'
+        status:
+          type: boolean
+          description: Availability status of the product
+          example: true
+        thumbnails:
+          type: array
+          items:
+            type: string
+          description: Array of thumbnail image URLs
+          example: []
+        __v:
+          type: integer
+          description: Version key for the document
+          example: 0
+  parameters:
+    LimitParam:
+      in: query
+      name: limit
+      required: false
+      schema:
+        type: integer
+        default: 5
+      description: The number of items to return
+    PageParam:
+      in: query
+      name: page
+      required: false
+      schema:
+        type: integer
+        default: 1
+      description: The page number to return
+    SortParam:
+      in: query
+      name: sort
+      required: false
+      schema:
+        type: string
+        enum: [asc,desc]
+        description: The field by which to sort the results
+    QueryParam:
+      in: query
+      name: query
+      required: false
+      schema:
+        type: string
+      description: Search query term
+  requestBodies:
+    createProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the product
+          example: "Product Title"
+        description:
+          type: string
+          description: Description of the product
+          example: "Product Description"
+        code:
+          type: string
+          description: Code of the product
+          example: "ABC123"
+        stock:
+          type: number
+          description: Stock of the product
+          example: 10
+        price:
+          type: number
+          description: Price of the product
+          example: 99.99
+        category:
+          type: string
+          description: Category of the product
+          example: "Electronics"
+        status:
+          type: boolean
+          description: Status of the product (optional)
+          default: true
+          example: true
+        thumbnails:
+          type: array
+          items:
+            type: string
+          description: Array of thumbnail URLs (optional)
+          example: ["https://example.com/image1.jpg", "https://example.com/image2.jpg"]
+        owner:
+          type: string
+          format: email
+          description: Owner's email address (optional)
+          default: "admin"
+          example: "user@example.com"
+  responseBodies:
+    getProducts:
+      type: object
+      properties:
+        status:
+          type: string
+        payload:
+          type: array
+          items:
+            $ref: "#components/schemas/ProductResponse"
+        totalDocs:
+          type: integer
+          description: Total number of documents
+          example: 10
+        limit:
+          type: integer
+          description: Maximum number of documents per page
+          example: 5
+        totalPages:
+          type: integer
+          description: Total number of pages
+          example: 2
+        page:
+          type: integer
+          description: Current page number
+          example: 1
+        pagingCounter:
+          type: integer
+          description: Paging counter
+          example: 1
+        hasPrevPage:
+          type: boolean
+          description: Indicates if there is a previous page
+          example: false
+        hasNextPage:
+          type: boolean
+          description: Indicates if there is a next page
+          example: true
+        prevPage:
+          type: integer
+          nullable: true
+          description: Previous page number, null if no previous page
+          example: null
+        nextPage:
+          type: integer
+          nullable: true
+          description: Next page number, null if no next page
+          example: 2
