@@ -2,7 +2,7 @@ import { AppError } from "../helpers/AppError.js";
 import { EErrors } from "../services/errors/enums.js";
 
 const errorStatusCodes = {
-  [EErrors.NOT_FOUND]: 400,
+  [EErrors.NOT_FOUND]: 404,
   [EErrors.UNAUTHORIZED]: 401,
   [EErrors.UNAUTHENTICATED]: 401,
   [EErrors.STOCK_ERROR]: 400,
@@ -14,7 +14,7 @@ const errorStatusCodes = {
 };
 
 export const errorHandler = (error, req, res, _next) => {
-  
+    
   req.logger.error(
     `${req.method} at ${
       req.url
