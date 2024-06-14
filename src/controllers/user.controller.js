@@ -15,7 +15,7 @@ export const Register = async (req, res, next) => {
     });
 
     const tokenUser = {
-      name: user.username,
+      name: newUser.username,
       age: newUser.age,
       email: newUser.email,
       role: newUser.role,
