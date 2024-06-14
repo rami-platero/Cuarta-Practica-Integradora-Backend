@@ -2,7 +2,7 @@ import User from "../models/user.model.js"
 
 export default class UserMongo {
     create = async (data) => {
-        return await User.create(data).toObject();
+        return await User.create(data)
     }
     findOne = async (data) => {
         return await User.findOne(data, {}, {lean: true})
