@@ -5,10 +5,10 @@
   "main": "ProductManager.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/app.js",
     "prod": "nodemon ./src/app.js --mode production",
-    "start": "node ./src/app.js"
+    "start": "node ./src/app.js",
+    "test": "mocha test/supertest.test.js"
   },
   "keywords": [],
   "author": "",
@@ -42,6 +42,9 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "commander": "^12.0.0"
+    "chai": "^5.1.1",
+    "commander": "^12.0.0",
+    "mocha": "^10.4.0",
+    "supertest": "^7.0.0"
   }
 }
