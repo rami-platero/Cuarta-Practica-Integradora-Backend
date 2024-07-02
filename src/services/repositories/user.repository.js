@@ -84,6 +84,8 @@ export default class UserRepository {
       });
     }
 
+    this.updateLastConnection(foundUser._id);
+
     const { password, ...loggedUser } = foundUser;
     return loggedUser;
   };
@@ -215,9 +217,87 @@ export default class UserRepository {
       });
     }
 
-    const newRole = foundUser.role === "premium"? "user" : "premium"
+    const newRole = foundUser.role === "premium" ? "user" : "premium";
 
-    await this.dao.updateOne({_id: foundUser._id}, {role: newRole})
-    return newRole
+    if(newRole === "premium"){
+      const documents = foundUser.documents || []
+      const hasAllDocuments = ["identificacion", "comprobanteEstado", "comprobanteDomicilio"].every((docName)=>{
+        return documents.some((doc)=>{
+          return doc.name === docName
+        })
+      })
+
+      if(!hasAllDocuments){
+        throw new AppError({
+          name: "Change role error.",
+          message: "Error while trying to change the role.",
+          code: EErrors.NOT_FOUND,
+          cause: `Missing documents.`,
+        });
+      }
+    }
+
+    await this.dao.updateOne({ _id: foundUser._id }, { role: newRole });
+    return newRole;
+  };
+
+  updateLastConnection = async (uid) => {
+    return this.dao.updateOne({_id: uid}, { last_connection: new Date() });
+  };
+
+  updateDocuments = async (uid, files) => {
+    const foundUser = await this.dao.findOne({ _id: uid });
+    if (!foundUser) {
+      throw new AppError({
+        name: "Update documents role error.",
+        message: "Error while trying to update user's documents.",
+        code: EErrors.NOT_FOUND,
+        cause: `User not found!.`,
+      });
+    }
+
+    let documents = foundUser.documents || [];
+
+    const previousDocsNames = documents.map((d) => {
+      return d.name;
+    });
+
+    Object.keys(files).forEach((field) => {
+      const file = files[field][0];
+      if (previousDocsNames.includes(field)) {
+        documents = documents.map((d) => {
+          if (d.name === file.name) {
+            return {
+              ...d,
+              reference: file.path.split("public")[1].replace(/\\/g, "/"),
+            };
+          }
+          return d;
+        });
+      } else {
+        documents.push({
+          name: field,
+          reference: file.path.split("public")[1].replace(/\\/g, "/"),
+        });
+      }
+    });
+
+    return this.dao.updateOne({_id: uid}, { documents });
+  };
+
+  updateProfilePicture = async (uid, file) => {
+    const foundUser = await this.dao.findOne({ _id: uid });
+    if (!foundUser) {
+      throw new AppError({
+        name: "Update documents role error.",
+        message: "Error while trying to update user's documents.",
+        code: EErrors.NOT_FOUND,
+        cause: `User not found!.`,
+      });
+    }
+
+    return await this.dao.updateOne({_id: uid}, {
+      profilePicture: file.path.split("public")[1].replace(/\\/g, "/"),
+    });
   };
 }
