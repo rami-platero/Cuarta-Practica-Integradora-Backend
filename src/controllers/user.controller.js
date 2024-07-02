@@ -60,8 +60,12 @@ export const Login = async (req, res, next) => {
   }
 };
 
-export const Logout = async (_req, res, next) => {
+export const Logout = async (req, res, next) => {
   try {
+    if (!req.user) {
+      return res.sendStatus(204);
+    }
+    await userService.updateLastConnection(req.user._id);
     res.clearCookie("jwtCookieToken");
     return res.status(200).json({ message: "Logged out successfully!" });
   } catch (error) {
@@ -120,12 +124,10 @@ export const resetPassword = async (req, res, next) => {
 
     await userService.resetPassword({ token, password });
 
-    return res
-      .status(200)
-      .json({
-        status: "success",
-        message: "Password has been reset successfully!",
-      });
+    return res.status(200).json({
+      status: "success",
+      message: "Password has been reset successfully!",
+    });
   } catch (error) {
     return next(error);
   }
@@ -137,12 +139,36 @@ export const changeRole = async (req, res, next) => {
 
     const newRole = await userService.changeRole(uid);
 
-    return res
-      .status(200)
-      .json({
-        status: "success",
-        message: `Successfully changed user role to ${newRole}`,
-      });
+    return res.status(200).json({
+      status: "success",
+      message: `Successfully changed user role to ${newRole}`,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const addDocuments = async (req, res, next) => {
+  try {
+    const { uid } = req.params;
+    await userService.updateDocuments(uid, req.files);
+    return res.status(201).json({
+      status: "success",
+      message: "Successfully updated user's documents.",
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const updateProfilePicture = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+    await userService.updateProfilePicture(_id, req.file["profilePicture"]);
+    return res.status(201).json({
+      status: "success",
+      message: "Successfully updated user's profile picture.",
+    });
   } catch (error) {
     return next(error);
   }
