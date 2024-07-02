@@ -13,7 +13,7 @@ const schema = new Schema({
     type: Number,
     required: true,
   },
-  cart: { type: Schema.Types.ObjectId, ref: "carts"},
+  cart: { type: Schema.Types.ObjectId, ref: "carts" },
   email: {
     type: String,
     required: true,
@@ -25,8 +25,18 @@ const schema = new Schema({
   role: {
     type: String,
     required: true,
-    enum: ['user', 'admin'],
+    enum: ["user", "admin"],
     default: "user",
+  },
+  profilePicture: { type: String, default: "" },
+  documents: [
+    {
+      name: { type: String, required: true },
+      reference: { type: String, required: true },
+    },
+  ],
+  last_connection: {
+    type: Date,
   },
 });
 
