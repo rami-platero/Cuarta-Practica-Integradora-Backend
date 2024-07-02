@@ -1,15 +1,30 @@
 import { Router } from "express";
-import { Login, Logout, Register, changeRole, forgotPassword, getCurrentUser, loginWithGitHub, resetPassword } from "../controllers/user.controller.js";
+import {
+  Login,
+  Logout,
+  Register,
+  addDocuments,
+  changeRole,
+  forgotPassword,
+  getCurrentUser,
+  loginWithGitHub,
+  resetPassword,
+  updateProfilePicture,
+} from "../controllers/user.controller.js";
 import passport from "passport";
-import { validateRegisterUser, validateResetPassword } from "../middlewares/validate.js";
+import {
+  validateRegisterUser,
+  validateResetPassword,
+} from "../middlewares/validate.js";
 import { passportCall } from "../middlewares/passport.js";
 import { isAuthorized } from "../middlewares/authJwt.js";
+import { upload } from "../middlewares/upload.middleware.js";
 
 const router = Router();
 
-router.post("/logout", Logout);
-router.post("/register", validateRegisterUser, Register)
-router.post("/login", Login)
+router.post("/logout", passportCall("jwt"), Logout);
+router.post("/register", validateRegisterUser, Register);
+router.post("/login", Login);
 
 router.get(
   "/github",
@@ -22,10 +37,30 @@ router.get(
   loginWithGitHub
 );
 
-router.get("/current", passportCall("jwt"), getCurrentUser)
+router.get("/current", passportCall("jwt"), getCurrentUser);
 
-router.post("/forgot-password", forgotPassword)
-router.post("/reset-password/:token", validateResetPassword, resetPassword)
-router.post("/premium/:uid", passportCall("jwt"), isAuthorized(["admin"]), changeRole)
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", validateResetPassword, resetPassword);
+router.post(
+  "/premium/:uid",
+  passportCall("jwt"),
+  isAuthorized(["admin"]),
+  changeRole
+);
+router.post(
+  "/:uid/documents",
+  upload.fields([
+    { name: "identificacion", maxCount: 1 },
+    { name: "comprobanteDomicilio", maxCount: 1 },
+    { name: "comprobanteEstado", maxCount: 1 },
+  ]),
+  addDocuments
+);
+router.post(
+  "/:uid/profile-picture",
+  upload.single("profilePicture"),
+  passportCall("jwt"),
+  updateProfilePicture
+);
 
 export default router;
