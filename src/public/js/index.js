@@ -13,57 +13,6 @@ const notifyError = (message) => {
 
 const $form = document.getElementById("form");
 
-// client validations + data parsing
-const validateFields = (data) => {
-  const allowedFields = {
-    title: {
-      type: "string",
-      required: true,
-    },
-    description: {
-      type: "string",
-      required: true,
-    },
-    code: {
-      type: "string",
-      required: true,
-    },
-    stock: {
-      type: "number",
-      required: true,
-    },
-    price: {
-      type: "number",
-      required: true,
-    },
-    category: {
-      type: "string",
-      required: true,
-    },
-  };
-
-  const dataKeys = Object.keys(data);
-  const allowedKeys = Object.keys(allowedFields);
-
-  for (const dataKey of dataKeys) {
-    if (!allowedKeys.includes(dataKey)) {
-      throw new AppError(400, { message: `${dataKey} is not a valid field.` });
-    }
-    // parse data with type number
-    if (allowedFields[dataKey].type === "number" && !isNaN(data[dataKey])) {
-      data[dataKey] = Number(data[dataKey]);
-    }
-  }
-
-  for (const key of allowedKeys) {
-    if (!dataKeys.includes(key) && allowedFields[key].required) {
-      throw new AppError(400, { message: `${key} field is missing.` });
-    }
-  }
-
-  return data;
-};
-
 const formatValidationErrors = (errors) => {
   let formattedErrors = [];
 
@@ -74,16 +23,14 @@ const formatValidationErrors = (errors) => {
   return formattedErrors;
 };
 
-const addProduct = async () => {
+const createProduct = async () => {
   try {
     const formData = new FormData($form);
     const data = {};
     formData.forEach((value, key) => {
       data[key] = value;
     });
-    // parses data
-    const parsedData = validateFields(data);
-    await axios.post("/api/products", parsedData);
+    await axios.post("/api/products", data);
     $form.reset();
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -117,7 +64,7 @@ const deleteProduct = async (id) => {
 
 $form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  await addProduct();
+  await createProduct();
 });
 
 socket.on("add_product", (newProduct) => {
