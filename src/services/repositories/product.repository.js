@@ -7,7 +7,7 @@ export default class ProductRepository {
     this.dao = dao;
   }
 
-  createProduct = async (body) => {
+  createProduct = async (body, thumbnails) => {
     return await this.dao.create({
       title: body.title,
       category: body.category,
@@ -16,7 +16,7 @@ export default class ProductRepository {
       price: body.price,
       status: body.status,
       stock: body.stock,
-      thumbnails: body.thumbnails,
+      thumbnails: thumbnails,
       owner: body.owner
     });
   };
