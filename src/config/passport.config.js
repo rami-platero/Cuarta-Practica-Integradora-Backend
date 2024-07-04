@@ -1,20 +1,19 @@
 import passport from "passport";
 import GitHubStrategy from "passport-github2";
-import User from '../services/dao/mongo/models/user.model.js'
+import User from "../services/dao/mongo/models/user.model.js";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import { config } from "./variables.config.js";
 import { userService } from "../services/service.js";
 
-const cookieExtractor = req => {
+const cookieExtractor = (req) => {
   let token = null;
-  if (req && req.cookies) { 
-      token = req.cookies['jwtCookieToken'];
+  if (req && req.cookies) {
+    token = req.cookies["jwtCookieToken"];
   }
   return token;
 };
 
 const initializePassport = () => {
-
   passport.use(
     "github",
     // @ts-ignore
@@ -39,6 +38,7 @@ const initializePassport = () => {
             });
             return done(null, newUser);
           }
+          await userService.updateLastConnection(foundUser._id);
           return done(null, foundUser);
         } catch (error) {
           return done(error);
@@ -56,9 +56,9 @@ const initializePassport = () => {
       (jwt_payload, done) => {
         try {
           return done(null, jwt_payload.user);
-      } catch (error) {
+        } catch (error) {
           return done(error);
-      }
+        }
       }
     )
   );
