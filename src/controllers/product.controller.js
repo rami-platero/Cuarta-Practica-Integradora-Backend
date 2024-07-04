@@ -56,7 +56,14 @@ export const createProduct = async (req, res, next) => {
   try {
     const io = app.get("io");
 
-    const newProduct = await productService.createProduct(req.body);
+    const files = req.files.filter((f)=>{
+      return f.fieldname === 'thumbnails' 
+    })
+    const thumbnails = !files.length? [] : files.map((file)=>{
+      return file.path.split("public")[1].replace(/\\/g, "/")
+    }) 
+
+    const newProduct = await productService.createProduct(req.body, thumbnails);
 
     io.emit("add_product", newProduct);
 
