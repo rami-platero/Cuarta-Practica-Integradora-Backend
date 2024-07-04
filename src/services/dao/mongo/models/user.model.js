@@ -37,6 +37,7 @@ const schema = new Schema({
   ],
   last_connection: {
     type: Date,
+    default: new Date()
   },
 });
 
