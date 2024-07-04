@@ -32,26 +32,62 @@ const product = z.object({
     })
     .optional()
     .default(true),
-  thumbnails: z
-    .array(
-      z.string({
-        invalid_type_error: "Thumbnails must be an array of strings",
-      })
-    )
-    .optional(),
   owner: z.string().email().optional().default("admin")
 });
 
-export const createBodyProductSchema = product.extend({
-  thumbnails: z
-    .array(
-      z.string({
-        invalid_type_error: "Thumbnails must be an array of strings",
-      })
-    )
-    .optional()
-    .default([]),
+const productFormData = z.object({
+  title: z.string({
+    required_error: "Title is required",
+    invalid_type_error: "Title must be a string",
+  }),
+  description: z.string({
+    required_error: "Description is required",
+    invalid_type_error: "Description must be a string",
+  }),
+  code: z.string({
+    required_error: "Code is required",
+    invalid_type_error: "Code must be a string",
+  }),
+  stock: z
+    .string({
+      required_error: "Stock is required",
+    })
+    .transform((val) => parseInt(val))
+    .refine((val) => !isNaN(val), {
+      message: "Stock must be a number",
+    }),
+  price: z
+    .string({
+      required_error: "Price is required",
+    })
+    .transform((val) => parseFloat(val))
+    .refine((val) => !isNaN(val), {
+      message: "Price must be a number",
+    }),
+  category: z.string({
+    required_error: "Category is required",
+    invalid_type_error: "Category must be a string",
+  }),
+  status: z
+    .string({
+      required_error: "Status is required",
+      invalid_type_error: "Status must be a boolean",
+    })
+    .default("true")
+    .refine((val) => {
+      return val === "true" || val === "false"
+    }, {
+      message: "Price must be a boolean",
+    })
+    .transform((val) => {
+      if (val.toLowerCase() === 'true') return true;
+      if (val.toLowerCase() === 'false') return false;
+    })
+    .optional(),
+  owner: z.string().optional().default("admin"),
 });
+
+export const createBodyProductSchema = productFormData
 
 export const updateBodyProductSchema = product
   .extend({
