@@ -16,7 +16,7 @@
       </div>
     {{/each}}
   </div>
-  <form id="form">
+  <form id="form" enctype='multipart/form-data'>
     <h2>Create Product</h2>
     <div class="fields">
       <div>
@@ -42,6 +42,10 @@
       <div>
         <label for="stock">Stock</label>
         <input type="number" name="stock" required />
+      </div>
+      <div>
+        <label for="thumbnails">Thumbnails</label>
+        <input type="file" name="thumbnails" multiple="multiple" />
       </div>
     </div>
 
