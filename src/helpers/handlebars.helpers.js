@@ -1,3 +1,5 @@
+import { config } from "../config/variables.config.js";
+
 const hbsHelpers = {
   times: function (n, block) {
     {
@@ -24,7 +26,7 @@ const hbsHelpers = {
   },
   updateQueryParam: function (param, value, queries) {
     try {
-      const url = "http://localhost:8080/products";
+      const url = `${config.BASE_URL}/products`;
       const urlParams = new URLSearchParams(queries);
       urlParams.set(param, value);
       return `${url}?${urlParams.toString()}`;

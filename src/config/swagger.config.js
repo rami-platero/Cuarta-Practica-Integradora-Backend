@@ -1,11 +1,16 @@
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUI from "swagger-ui-express";
 import __dirname from "../utils.js";
+import { config } from "./variables.config.js";
 
 const options = {
   definition: {
     openapi: "3.0.1",
-    info: { title: "Gaming Components", version: "1.0.0", description: "Gaming Components API"},
+    info: {
+      title: "Gaming Components",
+      version: "1.0.0",
+      description: "Gaming Components API",
+    },
   },
   apis: [`${__dirname}/docs/**/*.yaml`],
 };
@@ -20,5 +25,5 @@ export const swaggerDocs = (app, port) => {
     res.send(swaggerSpec);
   });
 
-  console.log(`Version 1 Docs are available at http://localhost:${port}/api/docs`);
+  console.log(`Version 1 Docs are available at ${config.BASE_URL}/api/docs`);
 };
