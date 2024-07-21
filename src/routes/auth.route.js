@@ -19,7 +19,7 @@ import {
   validateResetPassword,
 } from "../middlewares/validate.js";
 import { passportCall } from "../middlewares/passport.js";
-import { isAuthorized } from "../middlewares/authJwt.js";
+import { isAuthenticated, isAuthorized } from "../middlewares/authJwt.js";
 import { upload } from "../middlewares/upload.middleware.js";
 
 const router = Router();
@@ -64,6 +64,14 @@ router.post(
   passportCall("jwt"),
   updateProfilePicture
 );
-router.route("/users").delete(removeInactiveUsers).get(getAllUsers);
+router
+  .route("/users")
+  .delete(
+    passportCall("jwt"),
+    isAuthenticated,
+    isAuthorized,
+    removeInactiveUsers
+  )
+  .get(passportCall("jwt"), isAuthenticated, isAuthorized, getAllUsers);
 
 export default router;
