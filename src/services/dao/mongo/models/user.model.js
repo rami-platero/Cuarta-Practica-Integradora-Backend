@@ -11,9 +11,9 @@ const schema = new Schema({
   },
   age: {
     type: Number,
-    required: true,
+    required: false,
   },
-  cart: { type: Schema.Types.ObjectId, ref: "carts" },
+  cart: { type: Schema.Types.ObjectId, ref: "carts", required: true },
   email: {
     type: String,
     required: true,
