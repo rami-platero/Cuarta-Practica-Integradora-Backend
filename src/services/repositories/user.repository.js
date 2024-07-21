@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { EErrors } from "../errors/enums.js";
 import { sendMail } from "../email/mailing.service.js";
 import jwt from "jsonwebtoken";
+import { cartsService } from "../service.js";
 
 export default class UserRepository {
   constructor(dao) {
@@ -22,16 +23,19 @@ export default class UserRepository {
     try {
       // registering with GitHub
       if (strategy === "github") {
+        const newCart = await cartsService.createCart();
         return await this.dao.create({
           email,
           password: null,
           username,
+          cart: newCart._id
         });
       }
 
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(pass, salt);
 
+      const newCart = await cartsService.createCart();
       const { password, ...newUser } = await this.dao.create({
         email,
         password: hashedPassword,
@@ -39,6 +43,7 @@ export default class UserRepository {
         lastName,
         username: `${firstName} ${lastName}`,
         age: Number(age),
+        cart: newCart._id
       });
 
       return newUser;
@@ -219,15 +224,19 @@ export default class UserRepository {
 
     const newRole = foundUser.role === "premium" ? "user" : "premium";
 
-    if(newRole === "premium"){
-      const documents = foundUser.documents || []
-      const hasAllDocuments = ["identificacion", "comprobanteEstado", "comprobanteDomicilio"].every((docName)=>{
-        return documents.some((doc)=>{
-          return doc.name === docName
-        })
-      })
+    if (newRole === "premium") {
+      const documents = foundUser.documents || [];
+      const hasAllDocuments = [
+        "identificacion",
+        "comprobanteEstado",
+        "comprobanteDomicilio",
+      ].every((docName) => {
+        return documents.some((doc) => {
+          return doc.name === docName;
+        });
+      });
 
-      if(!hasAllDocuments){
+      if (!hasAllDocuments) {
         throw new AppError({
           name: "Change role error.",
           message: "Error while trying to change the role.",
@@ -242,7 +251,7 @@ export default class UserRepository {
   };
 
   updateLastConnection = async (uid) => {
-    return this.dao.updateOne({_id: uid}, { last_connection: new Date() });
+    return this.dao.updateOne({ _id: uid }, { last_connection: new Date() });
   };
 
   updateDocuments = async (uid, files) => {
@@ -282,7 +291,7 @@ export default class UserRepository {
       }
     });
 
-    return this.dao.updateOne({_id: uid}, { documents });
+    return this.dao.updateOne({ _id: uid }, { documents });
   };
 
   updateProfilePicture = async (uid, file) => {
@@ -296,8 +305,25 @@ export default class UserRepository {
       });
     }
 
-    return await this.dao.updateOne({_id: uid}, {
-      profilePicture: file.path.split("public")[1].replace(/\\/g, "/"),
-    });
+    return await this.dao.updateOne(
+      { _id: uid },
+      {
+        profilePicture: file.path.split("public")[1].replace(/\\/g, "/"),
+      }
+    );
   };
+
+  getAllUsers = async () => {
+    const users = await this.dao.findAll();
+    return users
+  };
+
+  removeInactiveUsers = async () => {
+    const beforeDate = new Date().getDate() - 2;
+    return this.dao.deleteManyWithLastConnectionBefore(beforeDate);
+  };
+
+  getUser = async (filter) => {
+    return await this.dao.findOne(filter)
+  }
 }
