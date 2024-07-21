@@ -22,7 +22,7 @@ html {
   background-color: #b8b8b8;
 }
 
-body {
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -285,9 +285,9 @@ main {
 
   .errorLink {
     background-color: rgb(226, 161, 161);
-    padding: .5rem;
+    padding: 0.5rem;
     border-radius: 5px;
-    font-size: .9rem;
+    font-size: 0.9rem;
     color: rgb(143, 0, 0);
     font-weight: 500;
     a {
@@ -330,5 +330,159 @@ main {
     cursor: pointer;
     font-weight: 500;
     border-radius: 5px;
+  }
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    max-width: 800px;
+    border-collapse: collapse;
+    background-color: rgba(0, 0, 0, 0.226);
+    text-align: left;
+    margin: auto;
+
+    thead {
+      tr {
+        th {
+          padding: 0.5rem;
+          font-size: 0.9rem;
+          font-weight: 500;
+          background-color: rgba(0, 0, 0, 0.397);
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        &:nth-of-type(even) {
+          background-color: rgb(19, 19, 19);
+        }
+
+        td {
+          position: relative;
+          font-size: 0.9rem;
+          font-weight: 300;
+          padding: 0.5rem;
+        }
+      }
+    }
+  }
+}
+
+.ellipsisBtn {
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+  color: white;
+  transition: ease-in-out 0.2s;
+
+  &:hover > i {
+    opacity: 0.7;
+    transition: ease-in-out 0.2s;
+  }
+
+  i {
+    pointer-events: none;
+  }
+}
+
+.contextMenu {
+  background-color: rgb(10, 10, 10);
+  min-height: 45px;
+  min-width: 130px;
+  position: absolute;
+  top: -0.5rem;
+  right: 3.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.253);
+  border-radius: 10px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  button {
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    transition: 0.2s ease-in-out;
+    cursor: pointer;
+    z-index: 2;
+
+    &:hover {
+      transition: 0.2s ease-in-out;
+      background-color: #181818;
+    }
+  }
+}
+
+.modalContainer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.651);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .modal {
+    background-color: rgb(8, 8, 8);
+    color: white;
+    border: 1px solid white;
+    max-width: 350px;
+    border: 1px solid rgba(255, 255, 255, 0.534);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    gap: 0.5rem;
+    background: radial-gradient(
+      80% 80% at center 0%,
+      rgba(46, 235, 39, 0.06) 3%,
+      rgba(98, 255, 179, 0) 70%,
+      rgba(98, 255, 179, 0) 100%
+    );
+
+    h2 {
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    p {
+      font-size: 0.9rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      border-radius: 10px;
+      width: fit-content;
+      height: auto;
+      color: white;
+      background-color: #060607;
+      border: 1px solid #ffffff75;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: 0.2s ease-in-out;
+
+      &:hover {
+        transition: 0.2s ease-in-out;
+        background-color: rgb(15, 15, 15);
+      }
+    }
   }
 }
