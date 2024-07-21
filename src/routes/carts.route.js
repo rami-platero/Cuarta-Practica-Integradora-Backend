@@ -23,10 +23,18 @@ import { isAuthenticated } from "../middlewares/authJwt.js";
 
 const router = Router();
 
-router.route("/").get(getAllCarts).post(createCart);
+router
+  .route("/")
+  .get(getAllCarts)
+  .post(passportCall("jwt"), isAuthenticated, createCart);
 router
   .route("/:cid/products/:pid")
-  .post(validateAddProductToCart, passportCall('jwt'), isAuthenticated, addProductToCart)
+  .post(
+    validateAddProductToCart,
+    passportCall("jwt"),
+    isAuthenticated,
+    addProductToCart
+  )
   .delete(validateRemoveProductFromCart, removeProductFromCart)
   .put(validateUpdateProductQuantity, updateProductQuantity);
 router
@@ -34,6 +42,11 @@ router
   .put(validateUpdateCartProductsArray, updateCartProductsArray)
   .delete(validateClearCart, clearCart)
   .get(validateGetCartById, getCartByID);
-router.post("/:cid/purchase", purchaseItems)  
+router.post(
+  "/:cid/purchase",
+  passportCall("jwt"),
+  isAuthenticated,
+  purchaseItems
+);
 
 export default router;
