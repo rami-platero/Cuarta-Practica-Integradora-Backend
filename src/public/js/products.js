@@ -46,9 +46,9 @@ const handleErrors = (error) => {
   return notifyError("Internal server error.");
 };
 
-const addProductToCart = async (id) => {
+const addProductToCart = async (pid,cid) => {
   try {
-    await axios.post(`/api/carts/65ee23e3ed136b6cc4bebfb5/products/${id}`);
+    await axios.post(`/api/carts/${cid}/products/${pid}`);
     return notifySuccess("Product added to cart successfully.");
   } catch (error) {
     return handleErrors(error)
@@ -68,7 +68,7 @@ const handleLogout = async () => {
 
 document.addEventListener("click", async (e) => {
   if (e.target.matches(".addToCart")) {
-    await addProductToCart(e.target.dataset.id);
+    await addProductToCart(e.target.dataset.id,e.target.dataset.cartid);
   }
   if(e.target.matches("#logout")){
     await handleLogout()
