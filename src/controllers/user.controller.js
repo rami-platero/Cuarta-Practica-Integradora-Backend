@@ -1,4 +1,4 @@
-import { AppError } from "../helpers/AppError.js";
+import { UserDTO } from "../services/dto/user.dto.js";
 import { userService } from "../services/service.js";
 import { generateJWToken } from "../utils/jwt.js";
 
@@ -19,6 +19,7 @@ export const Register = async (req, res, next) => {
       age: newUser.age,
       email: newUser.email,
       role: newUser.role,
+      cart: newUser.cart
     };
 
     const accessToken = generateJWToken(tokenUser);
@@ -45,6 +46,7 @@ export const Login = async (req, res, next) => {
       age: user.age,
       email: user.email,
       role: user.role,
+      cart: user.cart
     };
 
     const accessToken = generateJWToken(tokenUser);
@@ -80,6 +82,7 @@ export const loginWithGitHub = async (req, res, next) => {
       age: req.user.age,
       email: req.user.email,
       role: req.user.role,
+      cart: req.user.cart
     };
 
     const accessToken = generateJWToken(tokenUser);
@@ -173,3 +176,21 @@ export const updateProfilePicture = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const getAllUsers = async (_req, res, next) => {
+  try {
+    const users = await userService.getAllUsers().map(user => new UserDTO(user))
+    return res.status(200).json({ status: "success", payload: users });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const removeInactiveUsers = async (_req,res,next) => {
+  try {
+    await userService.removeInactiveUsers()
+    return res.sendStatus(204)
+  } catch (error) {
+    return next(error)
+  }
+}
