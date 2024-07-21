@@ -8,6 +8,7 @@ import {
   cartsService,
   messageService,
   productService,
+  userService,
 } from "../services/service.js";
 import jwt from "jsonwebtoken";
 import { config } from "../config/variables.config.js";
@@ -118,5 +119,13 @@ router.get("/reset-password", (req, res) => {
     console.log(error);
   }
 });
+
+router.get("/users", passportCall("jwt"), async (req,res) => {
+  if(!req.user){
+    return res.redirect("/")
+  }
+  const users = await userService.getAllUsers()
+  return res.render("users", {users})
+})
 
 export default router;
