@@ -6,8 +6,10 @@ import {
   addDocuments,
   changeRole,
   forgotPassword,
+  getAllUsers,
   getCurrentUser,
   loginWithGitHub,
+  removeInactiveUsers,
   resetPassword,
   updateProfilePicture,
 } from "../controllers/user.controller.js";
@@ -62,5 +64,6 @@ router.post(
   passportCall("jwt"),
   updateProfilePicture
 );
+router.route("/users").delete(removeInactiveUsers).get(getAllUsers);
 
 export default router;
