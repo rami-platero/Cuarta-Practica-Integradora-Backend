@@ -9,9 +9,18 @@
         <h3 class="price">$ {{this.product.price}}.00</h3>
       </div>
     {{/each}}
+
+    <button class="purchaseBtn" data-cid={{cart._id}}>Purchase items</button>
   {{else}}
     <h1>The cart you are trying to view doesn't exist!</h1>
     <a href="/">Back to home</a>
   {{/if}}
 
 </div>
+
+<script src="/js/cart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/toastify-js"
+></script>
